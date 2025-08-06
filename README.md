@@ -40,7 +40,6 @@ A powerful document analysis platform that uses AI to extract insights, identify
 
 - Ruby 3.4.4
 - Docker and Docker Compose
-- Node.js (for frontend assets)
 - Git
 
 ### Local Development
