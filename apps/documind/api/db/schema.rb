@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_174306) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_191037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -44,7 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_174306) do
   end
 
   create_table "ai_events", force: :cascade do |t|
-    t.bigint "document_id", null: false
+    t.bigint "document_id"
     t.string "event_type"
     t.string "model"
     t.integer "tokens_used"
@@ -53,7 +53,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_174306) do
     t.jsonb "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "deleted_document_id"
+    t.index ["deleted_document_id"], name: "index_ai_events_on_deleted_document_id"
     t.index ["document_id"], name: "index_ai_events_on_document_id"
+  end
+
+  create_table "deleted_documents", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "original_document_id", null: false
+    t.string "title", null: false
+    t.string "file_type"
+    t.integer "page_count", default: 0
+    t.integer "chunk_count", default: 0
+    t.integer "total_cost_cents", default: 0
+    t.integer "total_tokens_used", default: 0
+    t.integer "ai_events_count", default: 0
+    t.datetime "deleted_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_deleted_documents_on_deleted_at"
+    t.index ["original_document_id"], name: "index_deleted_documents_on_original_document_id"
+    t.index ["user_id"], name: "index_deleted_documents_on_user_id"
   end
 
 # Could not dump table "doc_chunks" because of following StandardError
@@ -68,10 +88,36 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_174306) do
     t.jsonb "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_documents_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "provider"
+    t.string "uid"
+    t.string "name"
+    t.string "avatar_url"
+    t.integer "documents_uploaded", default: 0, null: false
+    t.integer "ai_actions_used", default: 0, null: false
+    t.datetime "last_activity_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "public_id", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["public_id"], name: "index_users_on_public_id", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "ai_events", "deleted_documents"
   add_foreign_key "ai_events", "documents"
+  add_foreign_key "deleted_documents", "users"
   add_foreign_key "doc_chunks", "documents"
+  add_foreign_key "documents", "users"
 end

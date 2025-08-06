@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Costs", type: :request do
+RSpec.describe "Cost", type: :request do
   describe "GET /index" do
     it "returns http success" do
       get "/costs/index"

@@ -9,7 +9,7 @@ class CostsControllerTest < ActionDispatch::IntegrationTest
   test "should get costs index" do
     get "/costs"
     assert_response :success
-    assert_select "h1", "AI Usage Costs"
+    assert_select "h1", "AI Usage Cost"
     assert_select ".total-cost"
   end
 
