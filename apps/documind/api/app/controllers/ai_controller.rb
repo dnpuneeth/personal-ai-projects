@@ -1,5 +1,6 @@
 class AiController < ApplicationController
   before_action :set_document
+  before_action :check_ai_action_limit!, only: [:summarize_and_risks, :answer_question, :propose_redlines]
 
   def summarize_and_risks
     schema = {
@@ -148,8 +149,26 @@ class AiController < ApplicationController
         question: question
       )
 
-      # Parse JSON response
-      result = JSON.parse(response[:answer])
+      # Parse and validate JSON response
+      begin
+        result = JSON.parse(response[:answer])
+        
+        # Validate that result is a hash and not an error response
+        if result.is_a?(Hash) && result['error']
+          Rails.logger.error "AI returned error: #{result['error']}"
+          return handle_error("AI analysis failed: #{result['error']}", :internal_server_error)
+        end
+        
+        # Basic validation that we have a proper response structure
+        unless result.is_a?(Hash)
+          Rails.logger.error "AI response is not a valid hash: #{result.class}"
+          return handle_error('Invalid AI response format: Expected JSON object', :internal_server_error)
+        end
+        
+      rescue JSON::ParserError => e
+        Rails.logger.error "JSON parsing failed: #{e.message}. Raw response: #{response[:answer]}"
+        return handle_error('Invalid AI response format: Could not parse JSON', :internal_server_error)
+      end
 
       # Cache the result for 3 hours
       Rails.cache.write(cache_key, result, expires_in: 3.hours)
@@ -170,6 +189,9 @@ class AiController < ApplicationController
         }
       )
 
+      # Track usage for anonymous/authenticated users
+      increment_anonymous_ai_action_count!
+
       respond_to do |format|
         format.html do
           @ai_result = result
@@ -180,9 +202,6 @@ class AiController < ApplicationController
         end
       end
 
-    rescue JSON::ParserError => e
-      Rails.logger.error "JSON parsing error: #{e.message}"
-      handle_error('Invalid AI response format', :internal_server_error)
     rescue => e
       Rails.logger.error "AI request failed: #{e.message}"
       handle_error('AI processing failed', :internal_server_error)

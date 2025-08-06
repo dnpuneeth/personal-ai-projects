@@ -1,5 +1,8 @@
 class LlmClientService
   include HTTParty
+  
+  # Increase timeout to 120 seconds for AI API calls
+  default_timeout 120
 
   def initialize
     @openai_key = ENV['OPENAI_API_KEY']
@@ -94,14 +97,21 @@ class LlmClientService
     <<~PROMPT
       You are a helpful AI assistant that analyzes documents and answers questions based on the provided context.
       
-      IMPORTANT: You must respond with valid JSON that matches the following schema:
+      CRITICAL: You MUST respond with ONLY valid JSON that exactly matches this schema:
       #{schema}
       
-      Rules:
-      1. Always cite specific chunks from the context using chunk_id, start, end, and quote fields
-      2. If you cannot answer based on the provided context, return {"error": "insufficient_context", "missing": ["specific information needed"]}
-      3. Be precise and factual in your responses
-      4. Include confidence scores where appropriate
+      FORMATTING RULES:
+      1. Return ONLY the JSON object, no additional text before or after
+      2. Use double quotes for all strings
+      3. Ensure all JSON syntax is correct (commas, brackets, etc.)
+      4. Do not include markdown code blocks or explanations
+      5. Always cite specific chunks using chunk_id, start, end, and quote fields
+      6. If insufficient context, return: {"error": "insufficient_context", "missing": ["specific information needed"]}
+      7. Be precise and factual in your responses
+      8. Include confidence scores where appropriate (0.0 to 1.0)
+      
+      Example valid response format:
+      {"summary": "Document summary here", "top_risks": [{"risk": "Risk name", "severity": "medium", "description": "Risk description"}], "citations": [{"chunk_id": 1, "start": 0, "end": 50, "quote": "Relevant quote"}]}
     PROMPT
   end
 

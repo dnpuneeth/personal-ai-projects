@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  # User profile routes
+  get '/profile', to: 'profiles#show'
+  get '/profile/edit', to: 'profiles#edit'
+  patch '/profile', to: 'profiles#update'
+  put '/profile', to: 'profiles#update'
+
+
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'users/omniauth_callbacks'
+  }
   get "costs/index"
   # Root path
   root "home#index"
@@ -6,7 +16,7 @@ Rails.application.routes.draw do
   # Health check
   get '/healthz', to: 'health#show'
 
-  # Costs tracking
+  # Cost tracking
   get '/costs', to: 'costs#index'
 
       # Document management

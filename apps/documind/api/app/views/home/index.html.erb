@@ -38,24 +38,39 @@
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl lg:max-w-none">
       <div class="text-center">
-        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Trusted by professionals worldwide
-        </h2>
-        <p class="mt-4 text-lg leading-8 text-gray-600">
-          Process thousands of documents with AI-powered accuracy
-        </p>
+        <% if user_signed_in? %>
+          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Your Document Analytics
+          </h2>
+          <p class="mt-4 text-lg leading-8 text-gray-600">
+            Track your personal document processing and AI interactions
+          </p>
+        <% else %>
+          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Trusted by professionals worldwide
+          </h2>
+          <p class="mt-4 text-lg leading-8 text-gray-600">
+            Process thousands of documents with AI-powered accuracy
+          </p>
+        <% end %>
       </div>
       <dl class="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">
         <div class="flex flex-col bg-gray-400/5 p-8">
-          <dt class="text-sm font-semibold leading-6 text-gray-600">Total Documents</dt>
+          <dt class="text-sm font-semibold leading-6 text-gray-600">
+            <% if user_signed_in? %>Your Documents<% else %>Total Documents<% end %>
+          </dt>
           <dd class="order-first text-3xl font-bold tracking-tight text-gray-900"><%= @total_documents %></dd>
         </div>
         <div class="flex flex-col bg-gray-400/5 p-8">
-          <dt class="text-sm font-semibold leading-6 text-gray-600">Processed</dt>
+          <dt class="text-sm font-semibold leading-6 text-gray-600">
+            <% if user_signed_in? %>Your Processed<% else %>Processed<% end %>
+          </dt>
           <dd class="order-first text-3xl font-bold tracking-tight text-gray-900"><%= @completed_documents %></dd>
         </div>
         <div class="flex flex-col bg-gray-400/5 p-8">
-          <dt class="text-sm font-semibold leading-6 text-gray-600">AI Interactions</dt>
+          <dt class="text-sm font-semibold leading-6 text-gray-600">
+            <% if user_signed_in? %>Your AI Actions<% else %>AI Interactions<% end %>
+          </dt>
           <dd class="order-first text-3xl font-bold tracking-tight text-gray-900"><%= @total_ai_events %></dd>
         </div>
         <div class="flex flex-col bg-gray-400/5 p-8">
@@ -125,13 +140,19 @@
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl lg:max-w-none">
       <div class="flex items-center justify-between">
-        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Recent Documents</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <% if user_signed_in? %>Your Recent Documents<% else %>Recent Documents<% end %>
+        </h2>
         <%= link_to documents_path, class: "text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500" do %>
           View all <span aria-hidden="true">→</span>
         <% end %>
       </div>
       <p class="mt-4 text-lg leading-8 text-gray-600">
-        Latest documents processed by DocuMind
+        <% if user_signed_in? %>
+          Your latest uploaded and processed documents
+        <% else %>
+          Latest documents processed by DocuMind
+        <% end %>
       </p>
       
       <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -175,14 +196,31 @@
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <h3 class="mt-2 text-sm font-medium text-gray-900">No documents</h3>
-              <p class="mt-1 text-sm text-gray-500">Get started by uploading your first document.</p>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">
+                <% if user_signed_in? %>No documents yet<% else %>Sign in to view your documents<% end %>
+              </h3>
+              <p class="mt-1 text-sm text-gray-500">
+                <% if user_signed_in? %>
+                  Get started by uploading your first document to begin AI analysis.
+                <% else %>
+                  Sign in to access your personal document library and AI analysis history.
+                <% end %>
+              </p>
               <div class="mt-6">
-                <%= link_to new_document_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" do %>
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                  Upload Document
+                <% if user_signed_in? %>
+                  <%= link_to new_document_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" do %>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Upload Document
+                  <% end %>
+                <% else %>
+                  <%= link_to new_user_session_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                    </svg>
+                    Sign In
+                  <% end %>
                 <% end %>
               </div>
             </div>

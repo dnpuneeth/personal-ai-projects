@@ -1,0 +1,55 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <div class="mx-auto h-12 w-auto text-center">
+        <span class="text-3xl font-bold">
+          <span class="text-blue-600">Docu</span>Mind
+        </span>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Change your password
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Enter your new password below
+      </p>
+    </div>
+
+    <div class="mt-8">
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), 
+                   html: { method: :put, class: "space-y-6" }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+        <%= f.hidden_field :reset_password_token %>
+
+        <div>
+          <%= f.label :password, class: "sr-only" %>
+          <%= f.password_field :password, 
+              autofocus: true, 
+              autocomplete: "new-password",
+              placeholder: "New password (6 characters minimum)",
+              class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, class: "sr-only" %>
+          <%= f.password_field :password_confirmation, 
+              autocomplete: "new-password",
+              placeholder: "Confirm new password",
+              class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= f.submit "Change my password", 
+              class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+
+      <div class="text-center mt-6">
+        <span class="text-sm text-gray-600">
+          Remember your password?
+          <%= link_to "Sign in", new_user_session_path, 
+              class: "font-medium text-blue-600 hover:text-blue-500" %>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

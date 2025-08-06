@@ -4,7 +4,7 @@
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Upload Document</h1>
         <p class="mt-2 text-sm text-gray-600">
-          Upload a PDF document to analyze with AI
+          Upload a PDF or TXT document to analyze with AI
         </p>
       </div>
 
@@ -23,11 +23,11 @@
                   <span class="text-gray-500"> or drag and drop</span>
                 </span>
                 <span class="mt-1 block text-xs text-gray-500">
-                  PDF up to 10MB
+                  PDF or TXT up to 10MB
                 </span>
               </label>
               <%= form.file_field :file, 
-                  accept: ".pdf", 
+                  accept: ".pdf,.txt", 
                   class: "sr-only", 
                   id: "file-upload",
                   required: true %>

@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag "ai_loading", "data-turbo-track": "reload" %>
   </head>
 
   <body class="bg-gray-50 min-h-screen">
@@ -22,15 +23,54 @@
                 <span class="text-blue-600">Docu</span>Mind
               <% end %>
             </div>
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <%= link_to "Documents", documents_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
-              <%= link_to "Upload", new_document_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
-              <%= link_to "Costs", costs_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
-            </div>
+                      <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <%= link_to "Documents", documents_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
+            <%= link_to "Upload", new_document_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
+            <% if user_signed_in? %>
+              <%= link_to "Cost", costs_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
+              <%= link_to "Profile", profile_path, class: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" %>
+            <% end %>
           </div>
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <span class="text-sm text-gray-500">AI-Powered Document Analysis</span>
+          </div>
+          <div class="flex items-center space-x-4">
+            <!-- Usage Indicators for Anonymous Users -->
+            <% if anonymous_user? %>
+              <div class="text-xs text-gray-600">
+                <span class="inline-flex items-center px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
+                  <%= current_user_or_anonymous.documents_remaining %>/1 uploads left
+                </span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 ml-1">
+                  <%= current_user_or_anonymous.ai_actions_remaining %>/3 AI actions left
+                </span>
+
+              </div>
+            <% end %>
+
+            <!-- Authentication Links -->
+                          <div class="flex items-center space-x-4">
+                <% if user_signed_in? %>
+                  <div class="flex items-center space-x-3">
+                    <% if current_user.avatar_url.present? %>
+                      <%= link_to profile_path do %>
+                        <img class="h-8 w-8 rounded-full cursor-pointer hover:opacity-75" src="<%= current_user.avatar_url %>" alt="<%= current_user.display_name %>">
+                      <% end %>
+                    <% end %>
+                    <%= link_to profile_path, class: "text-sm font-medium text-gray-700 hover:text-gray-900 cursor-pointer" do %>
+                      <%= current_user.display_name %>
+                    <% end %>
+                    <%= button_to "Sign out", destroy_user_session_path, 
+                        method: :delete, 
+                        class: "text-sm text-gray-500 hover:text-gray-700 cursor-pointer bg-transparent border-0 p-0 font-normal",
+                        form_class: "inline" %>
+                  </div>
+              <% else %>
+                <div class="flex items-center space-x-3">
+                  <%= link_to "Sign in", new_user_session_path, 
+                      class: "text-sm font-medium text-gray-700 hover:text-gray-900" %>
+                  <%= link_to "Sign up", new_user_registration_path, 
+                      class: "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>

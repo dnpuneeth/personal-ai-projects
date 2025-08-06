@@ -1,7 +1,9 @@
 class Document < ApplicationRecord
+  # Associations
+  belongs_to :user, optional: true  # Allow anonymous documents
   has_one_attached :file
   has_many :doc_chunks, dependent: :destroy
-  has_many :ai_events, dependent: :destroy
+  has_many :ai_events, dependent: :nullify
 
   validates :title, presence: true
   validates :status, presence: true, inclusion: { in: %w[pending processing completed failed] }
@@ -25,5 +27,36 @@ class Document < ApplicationRecord
 
   def pending?
     status == 'pending'
+  end
+
+  def filename
+    file.attached? ? file.filename.to_s : title
+  end
+
+  def display_name
+    filename.presence || title
+  end
+
+  def file_type
+    return 'unknown' unless file.attached?
+    
+    content_type = file.content_type
+    filename_ext = file.filename.to_s.downcase
+    
+    if content_type == 'application/pdf' || filename_ext.end_with?('.pdf')
+      'pdf'
+    elsif content_type == 'text/plain' || filename_ext.end_with?('.txt')
+      'txt'
+    else
+      'unknown'
+    end
+  end
+
+  def is_pdf?
+    file_type == 'pdf'
+  end
+
+  def is_txt?
+    file_type == 'txt'
   end
 end
