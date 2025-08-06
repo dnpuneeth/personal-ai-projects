@@ -78,8 +78,10 @@ gem "opentelemetry-instrumentation-all", "~> 0.60"
 gem "aws-sdk-s3", "~> 1.0"
 
 # Request specs for testing
-gem "rspec-rails", "~> 6.0"
-gem "factory_bot_rails", "~> 6.4"
+  gem "rspec-rails", "~> 6.0"
+  gem "factory_bot_rails", "~> 6.4"
+  gem "minitest-reporters", "~> 1.6"
+  gem "webmock", "~> 3.18"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

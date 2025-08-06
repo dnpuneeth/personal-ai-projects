@@ -1,0 +1,36 @@
+# Test fixtures for document chunks
+chunk_one:
+  document: sample_document
+  content: "This is the first chunk of the sample contract containing introduction and parties involved."
+  chunk_index: 0
+  metadata:
+    page: 1
+    position: 0
+    word_count: 15
+
+chunk_two:
+  document: sample_document
+  content: "This is the second chunk containing terms and conditions of the agreement."
+  chunk_index: 1
+  metadata:
+    page: 2
+    position: 1
+    word_count: 12
+
+chunk_three:
+  document: sample_document
+  content: "This is the third chunk containing payment terms and delivery schedules."
+  chunk_index: 2
+  metadata:
+    page: 3
+    position: 2
+    word_count: 11
+
+processing_chunk:
+  document: processing_document
+  content: "This chunk belongs to a document that is still being processed."
+  chunk_index: 0
+  metadata:
+    page: 1
+    position: 0
+    word_count: 11

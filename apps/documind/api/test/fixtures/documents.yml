@@ -1,0 +1,31 @@
+# Test fixtures for documents
+sample_document:
+  title: "Sample Contract"
+  status: completed
+  metadata: 
+    pages: 5
+    file_size: 2048
+    original_filename: "sample_contract.pdf"
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+
+processing_document:
+  title: "Processing Document"
+  status: processing
+  metadata:
+    pages: 3
+    file_size: 1024
+    original_filename: "processing_doc.pdf"
+  created_at: <%= 2.hours.ago %>
+  updated_at: <%= 1.hour.ago %>
+
+failed_document:
+  title: "Failed Document"
+  status: failed
+  metadata:
+    pages: 0
+    file_size: 512
+    original_filename: "failed_doc.pdf"
+    error: "Failed to extract text"
+  created_at: <%= 3.days.ago %>
+  updated_at: <%= 3.days.ago %>

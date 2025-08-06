@@ -1,0 +1,40 @@
+# Test fixtures for AI events
+summarize_event:
+  document: sample_document
+  event_type: summarize_and_risks
+  model: "gpt-4o-mini"
+  tokens_used: 150
+  latency_ms: 1250
+  cost_cents: 15
+  metadata:
+    search_latency_ms: 45
+    chunks_retrieved: 3
+    cached: false
+  created_at: <%= 1.day.ago %>
+
+answer_event:
+  document: sample_document
+  event_type: answer_question
+  model: "gpt-4o-mini"
+  tokens_used: 200
+  latency_ms: 1800
+  cost_cents: 20
+  metadata:
+    search_latency_ms: 60
+    chunks_retrieved: 2
+    cached: false
+    question: "What are the payment terms?"
+  created_at: <%= 2.hours.ago %>
+
+redlines_event:
+  document: sample_document
+  event_type: propose_redlines
+  model: "gpt-4o-mini"
+  tokens_used: 300
+  latency_ms: 2100
+  cost_cents: 30
+  metadata:
+    search_latency_ms: 55
+    chunks_retrieved: 5
+    cached: false
+  created_at: <%= 1.hour.ago %>
