@@ -15,6 +15,7 @@ A powerful document analysis platform that uses AI to extract insights, identify
 - **Vector Search**: Semantic search through document content using embeddings
 - **Cost Tracking**: Monitor AI usage and costs in real-time with comprehensive dashboard
 - **Caching System**: Rails caching with 3-hour expiry to optimize costs and performance
+- **Dark Theme Support**: Full dark/light theme toggle with system preference detection
 - **Production Ready**: Full-stack Rails application with modern UI
 
 **Tech Stack:**
@@ -32,6 +33,7 @@ A powerful document analysis platform that uses AI to extract insights, identify
 - 📊 **Cost Dashboard**: Track AI usage costs, token consumption, and cache efficiency
 - 🔍 **Smart Search**: RAG-powered document search with citation tracking
 - 📝 **Document Analysis**: Automated summarization, risk assessment, and Q&A
+- 🌙 **Dark Theme**: Seamless light/dark theme switching with profile preferences
 - ⚡ **Performance**: Intelligent caching reduces costs by up to 70%
 
 ## 🚀 Quick Start

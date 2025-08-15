@@ -64,6 +64,10 @@
   color: #ca8a04;
 }
 
+.status-badge.status-pending {
+  color: #ca8a04;
+}
+
 .status-badge.status-processing {
   color: #2563eb;
 }
@@ -74,4 +78,108 @@
 
 .status-badge.status-failed {
   color: #dc2626;
-} 
+}
+
+/* Theme toggle and preference styles */
+.theme-toggle-btn {
+  @apply inline-flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200 rounded-lg;
+}
+
+.theme-toggle-btn:hover {
+  @apply bg-gray-100 dark:bg-gray-700;
+}
+
+.theme-toggle-btn:focus {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-800;
+}
+
+/* Theme preference radio button styles */
+.theme-option {
+  @apply relative flex cursor-pointer rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 p-4 shadow-sm focus:outline-none transition-all duration-200;
+}
+
+.theme-option:hover {
+  @apply border-blue-500 dark:border-blue-400 shadow-md;
+}
+
+.theme-option input[type="radio"]:checked + span {
+  @apply border-blue-500 dark:border-blue-400 ring-2 ring-blue-500 ring-opacity-50;
+}
+
+.theme-option input[type="radio"]:checked ~ svg {
+  @apply text-blue-600 dark:text-blue-400;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Dark mode specific adjustments */
+.dark .form-input {
+  @apply bg-gray-700 border-gray-600 text-white;
+}
+
+.dark .form-input:focus {
+  @apply border-blue-400 ring-blue-400;
+}
+
+.dark .form-label {
+  @apply text-gray-300;
+}
+
+/* Global dark mode overrides so existing views get dark styling without edits */
+@layer utilities {
+  .dark .bg-white { @apply bg-gray-800; }
+  .dark .bg-gray-50 { @apply bg-gray-900; }
+  .dark .bg-gray-100 { @apply bg-gray-800; }
+  .dark .text-gray-900 { @apply text-white; }
+  .dark .text-gray-800 { @apply text-gray-100; }
+  .dark .text-gray-700 { @apply text-gray-300; }
+  .dark .text-gray-600 { @apply text-gray-400; }
+  .dark .border-gray-200 { @apply border-gray-700; }
+  .dark .border-gray-300 { @apply border-gray-600; }
+  .dark .hover\:bg-gray-50:hover { @apply bg-gray-700; }
+  .dark .hover\:border-gray-400:hover { @apply border-gray-500; }
+  .dark .text-red-700 { @apply text-red-400; }
+  .dark .text-green-700 { @apply text-green-400; }
+  .dark .bg-green-50 { @apply bg-green-900/20; }
+  .dark .bg-red-50 { @apply bg-red-900/20; }
+  .dark .divide-gray-200 { @apply divide-gray-700; }
+  .dark .bg-amber-50 { @apply bg-amber-900/20; }
+  .dark .border-amber-200 { @apply border-amber-700; }
+  .dark .text-amber-900 { @apply text-amber-200; }
+  .dark .text-amber-700 { @apply text-amber-300; }
+}
+
+/* Custom scrollbars for data tables */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #9ca3af transparent; /* thumb, track */
+}
+.custom-scroll::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #9ca3af; /* gray-400 */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280; /* gray-500 */
+}
+.dark .custom-scroll {
+  scrollbar-color: #4b5563 transparent; /* gray-600 */
+}
+.dark .custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* gray-600 */
+}
+.dark .custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #374151; /* gray-700 */
+}

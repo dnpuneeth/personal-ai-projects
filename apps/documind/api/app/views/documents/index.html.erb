@@ -1,106 +1,104 @@
-<div class="bg-white">
-  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-    <div class="px-4 py-6 sm:px-0">
-      <div class="flex justify-between items-center mb-8">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Documents</h1>
-          <p class="mt-2 text-sm text-gray-600">
-            All documents processed by DocuMind
-          </p>
-        </div>
-        <%= link_to new_document_path, 
-            class: "inline-flex flex-col items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
-          <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <span>Upload Document</span>
-        <% end %>
+<div class="max-w-7xl mx-auto">
+  <div class="px-4 py-6 sm:px-0">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Documents</h1>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+          All documents processed by DocuMind
+        </p>
       </div>
+      <%= link_to new_document_path,
+          class: "inline-flex items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        <span>Upload Document</span>
+      <% end %>
+    </div>
 
-      <div class="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul class="divide-y divide-gray-200">
-          <% if @documents.any? %>
-            <% @documents.each do |document| %>
-              <li>
-                <div class="px-4 py-4 sm:px-6">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0">
-                        <% if document.is_pdf? %>
-                          <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
-                          </svg>
-                        <% elsif document.is_txt? %>
-                          <svg class="h-8 w-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
-                          </svg>
-                        <% else %>
-                          <svg class="h-8 w-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
-                          </svg>
-                        <% end %>
-                      </div>
-                      <div class="ml-4">
-                        <div class="flex items-center">
-                          <h3 class="text-lg font-medium text-gray-900">
-                            <%= link_to document.title, document_path(document), class: "hover:text-blue-600" %>
-                          </h3>
-                        </div>
-                        <div class="mt-2 flex items-center text-sm text-gray-500">
-                          <p>
-                            Uploaded <%= time_ago_in_words(document.created_at) %> ago
-                            <% if document.completed? %>
-                              • <%= pluralize(document.page_count, 'page') %> • <%= pluralize(document.chunk_count, 'chunk') %>
-                            <% end %>
-                          </p>
-                        </div>
-                      </div>
+    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+      <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+        <% if @documents.any? %>
+          <% @documents.each do |document| %>
+            <li>
+              <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                      <% if document.is_pdf? %>
+                        <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                        </svg>
+                      <% elsif document.is_txt? %>
+                        <svg class="h-8 w-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                        </svg>
+                      <% else %>
+                        <svg class="h-8 w-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                        </svg>
+                      <% end %>
                     </div>
-                    <div class="flex flex-col items-end gap-2">
-                      <span class="status-badge status-<%= document.status %>">
-                        <%= document.status.titleize %>
-                      </span>
-                      <div class="flex items-center space-x-4">
-                        <% if document.completed? %>
-                          <%= link_to document_path(document), 
-                              class: "text-blue-600 hover:text-blue-900 text-sm font-medium" do %>
-                            View Analysis
+                    <div class="ml-4">
+                      <div class="flex items-center">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                          <%= link_to document.title, document_path(document), class: "hover:text-blue-600 dark:hover:text-blue-400" %>
+                        </h3>
+                      </div>
+                      <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                        <p>
+                          Uploaded <%= time_ago_in_words(document.created_at) %> ago
+                          <% if document.completed? %>
+                            • <%= pluralize(document.page_count, 'page') %> • <%= pluralize(document.chunk_count, 'chunk') %>
                           <% end %>
-                        <% else %>
-                          <span class="text-gray-400 text-sm">Processing...</span>
-                        <% end %>
-                        <%= button_to document_path(document), method: :delete, 
-                            class: "text-red-600 hover:text-red-900 text-sm font-medium",
-                            data: { 
-                              confirm: "Are you sure you want to delete '#{document.title}'? This action cannot be undone.",
-                              turbo_method: :delete
-                            } do %>
-                          Delete
-                        <% end %>
+                        </p>
                       </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            <% end %>
-          <% else %>
-            <li>
-              <div class="px-4 py-12 sm:px-6">
-                <div class="text-center">
-                  <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <h3 class="mt-2 text-sm font-medium text-gray-900">No documents</h3>
-                  <p class="mt-1 text-sm text-gray-500">Get started by uploading your first document.</p>
-                  <div class="mt-6">
-                    <%= link_to "Upload Document", new_document_path, class: "btn-primary" %>
+                  <div class="flex flex-col items-end gap-2">
+                    <span class="status-badge status-<%= document.status %>">
+                      <%= document.status.titleize %>
+                    </span>
+                    <div class="flex items-center space-x-4">
+                      <% if document.completed? %>
+                        <%= link_to document_path(document),
+                            class: "text-blue-600 hover:text-blue-900 text-sm font-medium" do %>
+                          View Analysis
+                        <% end %>
+                      <% else %>
+                        <span class="text-gray-400 text-sm">Processing...</span>
+                      <% end %>
+                      <%= button_to document_path(document), method: :delete,
+                          class: "text-red-600 hover:text-red-900 text-sm font-medium",
+                          data: {
+                            confirm: "Are you sure you want to delete '#{document.title}'? This action cannot be undone.",
+                            turbo_method: :delete
+                          } do %>
+                        Delete
+                      <% end %>
+                    </div>
                   </div>
                 </div>
               </div>
             </li>
           <% end %>
-        </ul>
-      </div>
+        <% else %>
+          <li>
+            <div class="px-4 py-12 sm:px-6">
+              <div class="text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No documents</h3>
+                <p class="mt-1 text-sm text-gray-500">Get started by uploading your first document.</p>
+                <div class="mt-6">
+                  <%= link_to "Upload Document", new_document_path, class: "btn-primary" %>
+                </div>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
     </div>
   </div>
-</div> 
+</div>
