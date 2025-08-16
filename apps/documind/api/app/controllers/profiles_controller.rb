@@ -12,7 +12,7 @@ class ProfilesController < ApplicationController
     # Get AI events from both active and deleted documents
     user_document_ids = @user.documents.pluck(:id)
     user_deleted_document_ids = @user.deleted_documents.pluck(:id)
-    
+ 
     @recent_ai_events = if user_document_ids.any? && user_deleted_document_ids.any?
       AiEvent.where(
         "document_id IN (?) OR deleted_document_id IN (?)", 
@@ -35,9 +35,32 @@ class ProfilesController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to profile_path, notice: 'Profile updated successfully.'
+      if user_params[:profile_picture].present?
+        redirect_to profile_path, notice: 'Profile and picture updated successfully.'
+      else
+        redirect_to profile_path, notice: 'Profile updated successfully.'
+      end
     else
       render :edit, status: :unprocessable_entity
+    end
+  rescue => e
+    Rails.logger.error "Profile update error: #{e.message}"
+    @user.errors.add(:base, "An error occurred while updating your profile. Please try again.")
+    render :edit, status: :unprocessable_entity
+  end
+
+  def remove_profile_picture
+    @user = current_user
+    if @user.profile_picture.attached?
+      begin
+        @user.profile_picture.purge
+        redirect_to edit_profile_path, notice: 'Profile picture removed successfully.'
+      rescue => e
+        Rails.logger.error "Profile picture removal error: #{e.message}"
+        redirect_to edit_profile_path, alert: 'Failed to remove profile picture. Please try again.'
+      end
+    else
+      redirect_to edit_profile_path, alert: 'No profile picture to remove.'
     end
   end
 
@@ -48,6 +71,6 @@ class ProfilesController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email)
+    params.require(:user).permit(:name, :email, :profile_picture)
   end
 end

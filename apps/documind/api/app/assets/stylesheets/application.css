@@ -258,3 +258,100 @@
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+
+/* Profile Picture Styles */
+.profile-picture-upload {
+  @apply relative;
+}
+
+.profile-picture-drop-zone {
+  @apply border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center transition-all duration-200;
+}
+
+.profile-picture-drop-zone:hover {
+  @apply border-gray-400 dark:border-gray-500 bg-gray-50 dark:bg-gray-800;
+}
+
+.profile-picture-drop-zone.dragover {
+  @apply border-blue-500 bg-blue-50 dark:bg-blue-900/20;
+}
+
+.profile-picture-preview {
+  @apply mt-4;
+}
+
+.profile-picture-preview img {
+  @apply rounded-lg max-w-xs mx-auto;
+}
+
+/* File input styling */
+.file-input-wrapper {
+  @apply relative;
+}
+
+.file-input-wrapper input[type="file"] {
+  @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+}
+
+.file-input-button {
+  @apply inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all duration-200;
+}
+
+/* Profile picture container */
+.profile-picture-container {
+  @apply relative inline-block;
+}
+
+.profile-picture-remove {
+  @apply absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 transition-all duration-200 shadow-lg;
+}
+
+.profile-picture-remove:hover {
+  @apply scale-110;
+}
+
+/* Loading states */
+.profile-picture-loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+.profile-picture-loading::after {
+  content: '';
+  @apply absolute inset-0 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse;
+}
+
+/* Upload progress and feedback */
+.profile-picture-upload-progress {
+  @apply mt-2 text-sm text-gray-600 dark:text-gray-400;
+}
+
+.profile-picture-upload-success {
+  @apply text-green-600 dark:text-green-400;
+}
+
+.profile-picture-upload-error {
+  @apply text-red-600 dark:text-red-400;
+}
+
+/* Drag and drop visual feedback */
+.profile-picture-drag-over {
+  @apply border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-105;
+}
+
+/* Profile picture hover effects */
+.profile-picture-hover {
+  @apply transition-transform duration-200 hover:scale-105;
+}
+
+/* Profile picture edit overlay */
+.profile-picture-edit-overlay {
+  @apply absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200;
+}
+
+.profile-picture-edit-overlay:hover {
+  @apply opacity-100;
+}
+
+.profile-picture-edit-icon {
+  @apply text-white text-lg;
+}

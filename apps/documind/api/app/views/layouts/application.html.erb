@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag "profile_picture", "data-turbo-track": "reload" %>
   </head>
 
   <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-200">
@@ -60,10 +61,19 @@
             <div class="flex items-center space-x-4">
               <% if user_signed_in? %>
                 <div class="flex items-center space-x-3">
-                  <% if current_user.avatar_url.present? %>
-                    <%= link_to profile_path do %>
-                      <img class="h-8 w-8 rounded-full cursor-pointer hover:opacity-75 transition-opacity duration-200" src="<%= current_user.avatar_url %>" alt="<%= current_user.display_name %>">
-                    <% end %>
+                  <% if current_user.has_profile_picture? %>
+                    <div class="relative group cursor-pointer" onclick="openProfilePictureModal('<%= current_user.profile_picture.attached? ? url_for(current_user.profile_picture) : current_user.avatar_url %>', '<%= current_user.display_name %>')">
+                      <% if current_user.profile_picture.attached? %>
+                        <%= image_tag current_user.profile_picture_thumbnail,
+                            class: "h-8 w-8 rounded-full cursor-pointer hover:opacity-75 transition-all duration-200 object-cover hover:scale-110",
+                            alt: current_user.display_name %>
+                      <% else %>
+                        <img class="h-8 w-8 rounded-full cursor-pointer hover:opacity-75 transition-all duration-200 object-cover hover:scale-110"
+                             src="<%= current_user.avatar_url %>"
+                             alt="<%= current_user.display_name %>">
+                      <% end %>
+
+                    </div>
                   <% end %>
                   <%= link_to profile_path, class: "text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors duration-200" do %>
                     <%= current_user.display_name %>
@@ -113,5 +123,26 @@
         </div>
       </div>
     </footer>
+
+    <!-- Profile Picture Modal -->
+    <div id="profile-picture-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-full overflow-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modal-title">Profile Picture</h3>
+            <button type="button"
+                    onclick="closeProfilePictureModal()"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="text-center">
+            <img id="modal-image" src="" alt="" class="max-w-full h-auto rounded-lg mx-auto">
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

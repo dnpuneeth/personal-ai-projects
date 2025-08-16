@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get '/profile/edit', to: 'profiles#edit'
   patch '/profile', to: 'profiles#update'
   put '/profile', to: 'profiles#update'
+  delete '/profile/picture', to: 'profiles#remove_profile_picture', as: :remove_profile_picture
 
 
   devise_for :users, controllers: {
