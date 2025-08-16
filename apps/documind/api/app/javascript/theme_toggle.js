@@ -1,16 +1,10 @@
 // Theme toggle functionality
 export function initializeThemeToggle() {
-  console.log('Initializing theme toggle...');
-  
   const themeToggleBtn = document.getElementById('theme-toggle');
   const themePreferenceRadios = document.querySelectorAll('input[name="theme_preference"]');
 
-  console.log('Theme toggle button found:', themeToggleBtn);
-  console.log('Theme preference radios found:', themePreferenceRadios.length);
-
   // Check for saved theme preference or default to 'auto'
   let currentTheme = localStorage.getItem('theme') || 'auto';
-  console.log('Current theme from localStorage:', currentTheme);
 
   // Apply the theme on page load
   applyTheme(currentTheme);
@@ -22,20 +16,14 @@ export function initializeThemeToggle() {
   // Theme toggle click handler (bind once)
   if (themeToggleBtn) {
     if (themeToggleBtn.dataset.bound !== 'true') {
-      console.log('Adding click handler to theme toggle button');
       themeToggleBtn.addEventListener('click', handleThemeToggle);
       themeToggleBtn.dataset.bound = 'true';
-    } else {
-      console.log('Theme toggle button already bound; skipping re-bind');
     }
-  } else {
-    console.error('Theme toggle button not found!');
   }
 
   // Theme preference radio button handlers
   themePreferenceRadios.forEach(radio => {
     radio.addEventListener('change', function() {
-      console.log('Theme preference changed to:', this.value);
       const selectedTheme = this.value;
       currentTheme = selectedTheme;
       applyTheme(selectedTheme);
@@ -45,7 +33,6 @@ export function initializeThemeToggle() {
   });
 
   function handleThemeToggle(e) {
-    console.log('Theme toggle button clicked!');
     if (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -59,7 +46,6 @@ export function initializeThemeToggle() {
       currentTheme = 'light';
     }
 
-    console.log('New theme:', currentTheme);
     applyTheme(currentTheme);
     setRadioButton(currentTheme);
     localStorage.setItem('theme', currentTheme);
@@ -69,8 +55,6 @@ export function initializeThemeToggle() {
 
   // Function to apply theme
   function applyTheme(theme) {
-    console.log('Applying theme:', theme);
-
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else if (theme === 'light') {

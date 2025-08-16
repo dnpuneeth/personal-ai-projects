@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_191037) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_16_035714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -92,6 +92,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_191037) do
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
+  create_table "temp_ai_results", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.string "event_type", null: false
+    t.json "result_data", null: false
+    t.boolean "cached", default: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id", "event_type"], name: "index_temp_ai_results_on_document_id_and_event_type"
+    t.index ["document_id"], name: "index_temp_ai_results_on_document_id"
+    t.index ["expires_at"], name: "index_temp_ai_results_on_expires_at"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -120,4 +133,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_191037) do
   add_foreign_key "deleted_documents", "users"
   add_foreign_key "doc_chunks", "documents"
   add_foreign_key "documents", "users"
+  add_foreign_key "temp_ai_results", "documents"
 end

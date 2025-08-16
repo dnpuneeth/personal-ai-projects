@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       post :summarize, to: 'ai#summarize_and_risks', as: :summarize_ai
       post :answer, to: 'ai#answer_question', as: :answer_ai
       post :redlines, to: 'ai#propose_redlines', as: :redlines_ai
+      get :ai_results, to: 'ai#show', as: :ai_results
     end
   end
 

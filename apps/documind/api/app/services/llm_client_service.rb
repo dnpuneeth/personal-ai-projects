@@ -1,6 +1,6 @@
 class LlmClientService
   include HTTParty
-  
+
   # Increase timeout to 120 seconds for AI API calls
   default_timeout 120
 
@@ -12,7 +12,7 @@ class LlmClientService
 
   def answer(schema:, context:, question:, model: nil)
     model ||= @default_model
-    
+
     if model.start_with?('gpt-')
       openai_answer(schema: schema, context: context, question: question, model: model)
     elsif model.start_with?('claude-')
@@ -96,10 +96,10 @@ class LlmClientService
   def build_system_prompt(schema)
     <<~PROMPT
       You are a helpful AI assistant that analyzes documents and answers questions based on the provided context.
-      
+
       CRITICAL: You MUST respond with ONLY valid JSON that exactly matches this schema:
       #{schema}
-      
+
       FORMATTING RULES:
       1. Return ONLY the JSON object, no additional text before or after
       2. Use double quotes for all strings
@@ -109,7 +109,7 @@ class LlmClientService
       6. If insufficient context, return: {"error": "insufficient_context", "missing": ["specific information needed"]}
       7. Be precise and factual in your responses
       8. Include confidence scores where appropriate (0.0 to 1.0)
-      
+
       Example valid response format:
       {"summary": "Document summary here", "top_risks": [{"risk": "Risk name", "severity": "medium", "description": "Risk description"}], "citations": [{"chunk_id": 1, "start": 0, "end": 50, "quote": "Relevant quote"}]}
     PROMPT
@@ -119,10 +119,10 @@ class LlmClientService
     <<~PROMPT
       Context from document chunks:
       #{context.map { |chunk| "Chunk #{chunk.id}: #{chunk.content}" }.join("\n\n")}
-      
+
       Question: #{question}
-      
+
       Please provide your answer in the specified JSON format.
     PROMPT
   end
-end 
+end

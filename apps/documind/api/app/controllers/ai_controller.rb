@@ -100,6 +100,24 @@ class AiController < ApplicationController
     )
   end
 
+  def show
+    # Get AI result from temporary storage
+    @temp_result = TempAiResult.find(params[:result_id])
+    
+    unless @temp_result && @temp_result.document_id == @document.id
+      redirect_to document_path(@document), alert: 'AI analysis result not found or expired.'
+      return
+    end
+    
+    @ai_result = @temp_result.result_data
+    @cached = @temp_result.cached
+    
+    # Clean up old temporary results
+    cleanup_old_temp_results
+    
+    render :show
+  end
+
   private
 
   def set_document
@@ -113,17 +131,17 @@ class AiController < ApplicationController
 
     # Create cache key based on document, question, and schema
     cache_key = "ai_analysis:#{@document.id}:#{Digest::MD5.hexdigest(question)}:#{Digest::MD5.hexdigest(schema)}"
-    
+
     # Try to get cached result first
     cached_result = Rails.cache.read(cache_key)
     if cached_result
       Rails.logger.info "Cache hit for AI analysis: #{cache_key}"
-      
+
       respond_to do |format|
         format.html do
-          @ai_result = cached_result
-          @cached = true
-          render :show
+          # Store result in database temporarily and redirect to results page
+          temp_result = store_temp_result(cached_result, event_type, true)
+          redirect_to ai_results_document_path(@document, result_id: temp_result.id)
         end
         format.json do
           render json: cached_result.merge(cached: true)
@@ -152,19 +170,19 @@ class AiController < ApplicationController
       # Parse and validate JSON response
       begin
         result = JSON.parse(response[:answer])
-        
+
         # Validate that result is a hash and not an error response
         if result.is_a?(Hash) && result['error']
           Rails.logger.error "AI returned error: #{result['error']}"
           return handle_error("AI analysis failed: #{result['error']}", :internal_server_error)
         end
-        
+
         # Basic validation that we have a proper response structure
         unless result.is_a?(Hash)
           Rails.logger.error "AI response is not a valid hash: #{result.class}"
           return handle_error('Invalid AI response format: Expected JSON object', :internal_server_error)
         end
-        
+
       rescue JSON::ParserError => e
         Rails.logger.error "JSON parsing failed: #{e.message}. Raw response: #{response[:answer]}"
         return handle_error('Invalid AI response format: Could not parse JSON', :internal_server_error)
@@ -194,8 +212,9 @@ class AiController < ApplicationController
 
       respond_to do |format|
         format.html do
-          @ai_result = result
-          render :show
+          # Store result in database temporarily and redirect to results page
+          temp_result = store_temp_result(result, event_type, false)
+          redirect_to ai_results_document_path(@document, result_id: temp_result.id)
         end
         format.json do
           render json: result
@@ -239,4 +258,18 @@ class AiController < ApplicationController
     Rails.cache.delete_matched(pattern)
     Rails.logger.info "Cleared cache for document #{document_id}"
   end
-end 
+
+  def store_temp_result(result, event_type, cached)
+    TempAiResult.create!(
+      document_id: @document.id,
+      event_type: event_type,
+      result_data: result,
+      cached: cached,
+      expires_at: 1.hour.from_now
+    )
+  end
+
+  def cleanup_old_temp_results
+    TempAiResult.where('expires_at < ?', Time.current).delete_all
+  end
+end

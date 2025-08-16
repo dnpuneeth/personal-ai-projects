@@ -4,6 +4,7 @@ class Document < ApplicationRecord
   has_one_attached :file
   has_many :doc_chunks, dependent: :destroy
   has_many :ai_events, dependent: :nullify
+  has_many :temp_ai_results, dependent: :destroy
 
   validates :title, presence: true
   validates :status, presence: true, inclusion: { in: %w[pending processing completed failed] }
@@ -58,5 +59,9 @@ class Document < ApplicationRecord
 
   def is_txt?
     file_type == 'txt'
+  end
+
+  def cleanup_temp_ai_results
+    temp_ai_results.expired.delete_all
   end
 end
