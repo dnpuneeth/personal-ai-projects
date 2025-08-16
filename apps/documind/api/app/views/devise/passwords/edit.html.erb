@@ -1,55 +1,81 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-8">
-    <div>
-      <div class="mx-auto h-12 w-auto text-center">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+  <div class="max-w-md w-full mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="mx-auto h-12 w-auto mb-4">
         <span class="text-3xl font-bold">
-          <span class="text-blue-600">Docu</span>Mind
+          <span class="text-blue-600 dark:text-blue-400">Docu</span>Mind
         </span>
       </div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-        Change your password
-      </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
+      <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+        Change Password
+      </h1>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
         Enter your new password below
       </p>
     </div>
 
-    <div class="mt-8">
-      <%= form_for(resource, as: resource_name, url: password_path(resource_name), 
+    <!-- Main Form Card -->
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-8 transition-colors duration-200">
+      <!-- Password Change Success Message -->
+      <% if notice && notice.include?('password') %>
+        <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg transition-colors duration-200" role="alert">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-green-400 dark:text-green-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <span class="font-semibold">Password Updated Successfully!</span>
+              <p class="text-sm mt-1 text-green-600 dark:text-green-300">
+                Your password has been changed. You can now use your new password to sign in.
+              </p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name),
                    html: { method: :put, class: "space-y-6" }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
         <%= f.hidden_field :reset_password_token %>
 
-        <div>
-          <%= f.label :password, class: "sr-only" %>
-          <%= f.password_field :password, 
-              autofocus: true, 
+        <!-- New Password Field -->
+        <div class="space-y-2">
+          <%= f.label :password, "New Password", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= f.password_field :password,
+              autofocus: true,
               autocomplete: "new-password",
-              placeholder: "New password (6 characters minimum)",
-              class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+              placeholder: "Enter new password",
+              class: "appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200 sm:text-sm" %>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            6 characters minimum
+          </p>
         </div>
 
-        <div>
-          <%= f.label :password_confirmation, class: "sr-only" %>
-          <%= f.password_field :password_confirmation, 
+        <!-- Password Confirmation Field -->
+        <div class="space-y-2">
+          <%= f.label :password_confirmation, "Confirm New Password", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= f.password_field :password_confirmation,
               autocomplete: "new-password",
               placeholder: "Confirm new password",
-              class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+              class: "appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200 sm:text-sm" %>
         </div>
 
-        <div>
-          <%= f.submit "Change my password", 
-              class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        <!-- Submit Button -->
+        <div class="pt-4">
+          <%= f.submit "Change Password",
+              class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors duration-200" %>
         </div>
       <% end %>
+    </div>
 
-      <div class="text-center mt-6">
-        <span class="text-sm text-gray-600">
-          Remember your password?
-          <%= link_to "Sign in", new_user_session_path, 
-              class: "font-medium text-blue-600 hover:text-blue-500" %>
-        </span>
-      </div>
+    <!-- Sign In Link -->
+    <div class="text-center mt-6">
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        Remember your password?
+        <%= link_to "Sign in", new_user_session_path,
+            class: "font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-200" %>
+      </span>
     </div>
   </div>
 </div>

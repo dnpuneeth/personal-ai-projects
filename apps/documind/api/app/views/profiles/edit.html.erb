@@ -9,8 +9,9 @@
 
     <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-colors duration-200">
       <div class="px-6 py-8">
-        <%= form_with model: @user, url: profile_path, method: :patch,
-            html: { class: "space-y-8", multipart: true } do |f| %>
+        <%= form_for @user, url: '/profile', method: :patch,
+            html: { class: "space-y-8", multipart: true, data: { turbo: false }, id: "profile-edit-form" } do |f| %>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
           <% if @user.errors.any? %>
             <div class="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6 transition-colors duration-200">
@@ -188,34 +189,12 @@
             </div>
           </div>
 
-          <!-- Hidden form for removing profile picture -->
-          <%= form_tag remove_profile_picture_path, method: :delete, id: 'remove-picture-form', style: 'display: none;' do %>
-          <% end %>
-
-          <!-- Profile Picture Modal -->
-          <div id="profile-picture-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-full overflow-auto">
-              <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modal-title">Profile Picture</h3>
-                  <button type="button"
-                          onclick="closeProfilePictureModal()"
-                          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                  </button>
-                </div>
-                <div class="text-center">
-                  <img id="modal-image" src="" alt="" class="max-w-full h-auto rounded-lg mx-auto">
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Personal Information Section -->
-          <div class="space-y-6">
+          <div class="space-y-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3">Personal Information</h3>
+
+            <!-- Hidden field to ensure form has data -->
+            <%= f.hidden_field :id, value: @user.id %>
 
             <!-- Name Field -->
             <div>
@@ -225,38 +204,29 @@
                   placeholder: "Enter your full name" %>
               <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 flex items-center">
                 <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                 </svg>
                 This name will be displayed throughout the application.
               </p>
             </div>
 
-            <!-- Email Field -->
+            <!-- Email Field (Read-only) -->
             <div>
-              <%= f.label :email, "Email Address", class: "block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" %>
-              <%= f.email_field :email,
-                  class: "block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors duration-200",
-                  placeholder: "Enter your email address" %>
-              <% if @user.oauth_user? %>
-                <p class="mt-2 text-sm text-amber-600 dark:text-amber-400 flex items-center">
-                  <svg class="w-4 h-4 text-amber-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
-                  Changing email for Google accounts may affect your ability to sign in.
-                </p>
-              <% else %>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 flex items-center">
-                  <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                  </svg>
-                  You'll need to confirm your new email address if you change it.
-                </p>
-              <% end %>
+              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+              <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
+                <%= @user.email %>
+              </div>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Email address cannot be changed for security reasons.
+              </p>
             </div>
           </div>
 
           <!-- Theme Preferences Section -->
-          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 transition-colors duration-200">
+          <div class="mt-6 bg-gray-50 dark:bg-gray-700 rounded-lg p-6 transition-colors duration-200">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
               <svg class="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
@@ -267,11 +237,11 @@
               <p class="text-sm text-gray-600 dark:text-gray-400">
                 Choose your preferred theme for the application. You can also toggle between themes using the button in the navigation bar.
               </p>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <!-- Light Theme Option -->
-                <label class="theme-option">
+                <label class="theme-option cursor-pointer">
                   <input type="radio" name="theme_preference" value="light" class="sr-only" aria-labelledby="light-theme-label">
-                  <span class="flex flex-1">
+                  <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                     <span class="flex flex-col">
                       <span id="light-theme-label" class="block text-sm font-medium text-gray-900 dark:text-white">Light Theme</span>
                       <span class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -281,16 +251,16 @@
                         Clean and bright interface
                       </span>
                     </span>
-                  </span>
-                  <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 hidden" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
+                    <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 hidden" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
                 </label>
 
                 <!-- Dark Theme Option -->
-                <label class="theme-option">
+                <label class="theme-option cursor-pointer">
                   <input type="radio" name="theme_preference" value="dark" class="sr-only" aria-labelledby="dark-theme-label">
-                  <span class="flex flex-1">
+                  <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                     <span class="flex flex-col">
                       <span id="dark-theme-label" class="block text-sm font-medium text-gray-900 dark:text-white">Dark Theme</span>
                       <span class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -300,16 +270,16 @@
                         Easy on the eyes in low light
                       </span>
                     </span>
-                  </span>
-                  <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 hidden" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
+                    <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 hidden" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
                 </label>
 
                 <!-- Auto Theme Option -->
-                <label class="theme-option">
+                <label class="theme-option cursor-pointer">
                   <input type="radio" name="theme_preference" value="auto" class="sr-only" aria-labelledby="auto-theme-label" checked>
-                  <span class="flex flex-1">
+                  <div class="flex items-center justify-between p-4 border border-blue-200 dark:border-blue-600 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200">
                     <span class="flex flex-col">
                       <span id="auto-theme-label" class="block text-sm font-medium text-gray-900 dark:text-white">Auto</span>
                       <span class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -319,10 +289,10 @@
                         Follows system preference
                       </span>
                     </span>
-                  </span>
-                  <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 hidden" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
+                    <svg class="h-5 w-5 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
                 </label>
               </div>
               <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
@@ -332,24 +302,21 @@
           </div>
 
           <!-- Account Information Section -->
-          <div class="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-blue-900/20 rounded-lg p-6 border border-gray-200 dark:border-gray-600 transition-colors duration-200">
+          <div class="mt-6 bg-gray-50 dark:bg-gray-700 rounded-lg p-6 transition-colors duration-200">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+              <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
               </svg>
               Account Information
             </h3>
             <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600 transition-colors duration-200">
                 <dt class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Account Type</dt>
-                <dd class="mt-2">
+                <dd class="mt-2 text-sm font-semibold text-gray-900 dark:text-white flex items-center">
                   <% if @user.oauth_user? %>
                     <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-700">
-                      <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm6.707-9.293a1 1 0 00-1.414-1.414L9 12.586l-2.293-2.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l6-6z" clip-rule="evenodd" />
                       </svg>
                       Google Account
                     </span>
@@ -377,7 +344,7 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row justify-end pt-8 border-t border-gray-200 dark:border-gray-700 space-y-4 sm:space-y-0 sm:space-x-4">
+          <div class="flex flex-col sm:flex-row justify-end pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4 sm:space-y-0 sm:space-x-4">
             <%= link_to "Cancel", profile_path,
                 class: "inline-flex justify-center items-center px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200" %>
 
@@ -387,10 +354,100 @@
             <% end %>
 
             <%= f.submit "Update Profile",
-                class: "inline-flex justify-center items-center px-8 py-3 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer transform hover:scale-105" %>
+                class: "inline-flex justify-center items-center px-8 py-3 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer transform hover:scale-105",
+                data: { disable_with: "Updating..." } %>
           </div>
         <% end %>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Hidden form for removing profile picture - MOVED OUTSIDE main form -->
+<%= form_tag remove_profile_picture_path, method: :delete, id: 'remove-picture-form', style: 'display: none;' do %>
+<% end %>
+
+<!-- Profile Picture Modal -->
+<div id="profile-picture-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-full overflow-auto">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modal-title">Profile Picture</h3>
+        <button type="button"
+                onclick="closeProfilePictureModal()"
+                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="text-center">
+        <img id="modal-image" src="" alt="" class="max-w-full h-auto rounded-lg mx-auto">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Profile picture modal functionality
+function openProfilePictureModal(imageSrc, userName) {
+  const modal = document.getElementById('profile-picture-modal');
+  const modalImage = document.getElementById('modal-image');
+  const modalTitle = document.getElementById('modal-title');
+
+  if (modal && modalImage && modalTitle) {
+    modalImage.src = imageSrc;
+    modalImage.alt = userName;
+    modalTitle.textContent = `Profile Picture - ${userName}`;
+    modal.classList.remove('hidden');
+  }
+}
+
+function closeProfilePictureModal() {
+  const modal = document.getElementById('profile-picture-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('profile-picture-modal');
+  if (modal && e.target === modal) {
+    closeProfilePictureModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeProfilePictureModal();
+  }
+});
+
+// Profile picture removal confirmation
+function confirmRemoveProfilePicture() {
+  if (confirm('Are you sure you want to remove your profile picture? This action cannot be undone.')) {
+    document.getElementById('remove-picture-form').submit();
+  }
+}
+
+// Theme option selection
+document.addEventListener('DOMContentLoaded', function() {
+  const themeOptions = document.querySelectorAll('.theme-option input[type="radio"]');
+
+  themeOptions.forEach(option => {
+    option.addEventListener('change', function() {
+      // Remove active state from all options
+      themeOptions.forEach(opt => {
+        opt.closest('.theme-option').querySelector('svg').classList.add('hidden');
+      });
+
+      // Show active state for selected option
+      if (this.checked) {
+        this.closest('.theme-option').querySelector('svg').classList.remove('hidden');
+      }
+    });
+  });
+});
+</script>

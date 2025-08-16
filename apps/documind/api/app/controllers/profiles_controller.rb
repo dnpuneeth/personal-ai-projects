@@ -12,11 +12,11 @@ class ProfilesController < ApplicationController
     # Get AI events from both active and deleted documents
     user_document_ids = @user.documents.pluck(:id)
     user_deleted_document_ids = @user.deleted_documents.pluck(:id)
- 
+
     @recent_ai_events = if user_document_ids.any? && user_deleted_document_ids.any?
       AiEvent.where(
-        "document_id IN (?) OR deleted_document_id IN (?)", 
-        user_document_ids, 
+        "document_id IN (?) OR deleted_document_id IN (?)",
+        user_document_ids,
         user_deleted_document_ids
       ).includes(:document, :deleted_document).order(created_at: :desc).limit(10)
     elsif user_document_ids.any?
@@ -34,13 +34,17 @@ class ProfilesController < ApplicationController
   end
 
   def update
+    Rails.logger.info "Profile update started with params: #{user_params.inspect}"
+
     if @user.update(user_params)
+      Rails.logger.info "Profile update successful"
       if user_params[:profile_picture].present?
         redirect_to profile_path, notice: 'Profile and picture updated successfully.'
       else
         redirect_to profile_path, notice: 'Profile updated successfully.'
       end
     else
+      Rails.logger.error "Profile update failed with errors: #{@user.errors.full_messages}"
       render :edit, status: :unprocessable_entity
     end
   rescue => e
@@ -71,6 +75,7 @@ class ProfilesController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :profile_picture)
+    # Remove email from permitted params since it shouldn't be changeable
+    params.require(:user).permit(:name, :profile_picture)
   end
 end
