@@ -1,15 +1,15 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
   <div class="max-w-md w-full space-y-8">
     <div>
       <div class="mx-auto h-12 w-auto text-center">
         <span class="text-3xl font-bold">
-          <span class="text-blue-600">Docu</span>Mind
+          <span class="text-blue-600 dark:text-blue-400">Docu</span>Mind
         </span>
       </div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
         Create your account
       </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
+      <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
         Get unlimited document uploads and AI analysis
       </p>
     </div>
@@ -19,7 +19,7 @@
       <% if true || (ENV['GOOGLE_CLIENT_ID'].present? && ENV['GOOGLE_CLIENT_SECRET'].present?) %>
         <%= link_to user_google_oauth2_omniauth_authorize_path, 
             method: :post,
-            class: "group relative w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer" do %>
+            class: "group relative w-full flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900 cursor-pointer transition-colors duration-200" do %>
           <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -28,94 +28,87 @@
           </svg>
           Continue with Google
         <% end %>
-
-        <div class="relative">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-300" />
-          </div>
-          <div class="relative flex justify-center text-sm">
-            <span class="px-2 bg-gray-50 text-gray-500">Or sign up with email</span>
-          </div>
-        </div>
-      <% else %>
-        <!-- No divider when Google OAuth is not configured -->
       <% end %>
 
       <!-- Email/Password Form -->
       <div class="mt-6">
-        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), 
-                     html: { class: "space-y-4" }) do |f| %>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name),
+                     html: { class: "space-y-6" }) do |f| %>
           <%= render "devise/shared/error_messages", resource: resource %>
 
+          <!-- Form Fields -->
           <div class="space-y-4">
+            <!-- Name Field -->
             <div>
               <%= f.label :name, class: "sr-only" %>
-              <%= f.text_field :name, 
+              <%= f.text_field :name,
                   autofocus: true,
                   placeholder: "Full name",
-                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 sm:text-sm transition-colors duration-200" %>
             </div>
 
+            <!-- Email Field -->
             <div>
               <%= f.label :email, class: "sr-only" %>
-              <%= f.email_field :email, 
+              <%= f.email_field :email,
                   autocomplete: "email",
                   placeholder: "Email address",
-                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 sm:text-sm transition-colors duration-200" %>
             </div>
 
+            <!-- Password Field -->
             <div>
               <%= f.label :password, class: "sr-only" %>
-              <%= f.password_field :password, 
+              <%= f.password_field :password,
                   autocomplete: "new-password",
                   placeholder: "Password (6 characters minimum)",
-                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 sm:text-sm transition-colors duration-200" %>
             </div>
 
+            <!-- Password Confirmation Field -->
             <div>
               <%= f.label :password_confirmation, class: "sr-only" %>
-              <%= f.password_field :password_confirmation, 
+              <%= f.password_field :password_confirmation,
                   autocomplete: "new-password",
                   placeholder: "Confirm password",
-                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+                  class: "appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 sm:text-sm transition-colors duration-200" %>
             </div>
           </div>
 
-          <div>
-                      <%= f.submit "Create account", 
-              class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer" %>
+          <!-- Submit Button -->
+          <div class="pt-4">
+            <%= f.submit "Create account",
+                class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900 cursor-pointer transition-colors duration-200" %>
           </div>
         <% end %>
       </div>
 
       <div class="text-center relative z-10">
-        <span class="text-sm text-gray-600">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
           Already have an account?
         </span>
         <br>
-        <%= link_to "Sign in", new_user_session_path, 
-            class: "font-medium text-blue-600 hover:text-blue-500 cursor-pointer relative z-10 block mt-1",
-            data: { turbo: false },
-            style: "pointer-events: auto;",
-            onclick: "console.log('Sign in clicked'); return true;" %>
+        <%= link_to "Sign in", new_user_session_path,
+            class: "font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 cursor-pointer relative z-10 block mt-1 transition-colors duration-200",
+            data: { turbo: false } %>
       </div>
 
       <!-- Anonymous Usage Info -->
-      <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+      <div class="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md transition-colors duration-200">
         <div class="flex">
           <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="h-5 w-5 text-yellow-400 dark:text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
           </div>
           <div class="ml-3">
-            <h3 class="text-sm font-medium text-yellow-800">
+            <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
               Try DocuMind without signing up
             </h3>
-            <div class="mt-2 text-sm text-yellow-700">
-              <p>Anonymous users can upload 1 document and perform 3 AI actions. 
-                 <%= link_to "Continue without account", root_path, 
-                     class: "font-medium underline text-yellow-700 hover:text-yellow-600 cursor-pointer" %>
+            <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+              <p>Anonymous users can upload 1 document and perform 3 AI actions.
+                 <%= link_to "Continue without account", root_path,
+                     class: "font-medium underline text-yellow-700 dark:text-yellow-300 hover:text-yellow-600 dark:hover:text-yellow-200 transition-colors duration-200 cursor-pointer" %>
               </p>
             </div>
           </div>
@@ -124,3 +117,47 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add form submission feedback
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      console.log('🚀 Creating new account...');
+
+      // Get form data for logging
+      const formData = new FormData(form);
+      const email = formData.get('user[email]');
+      const name = formData.get('user[name]');
+
+      if (email) {
+        console.log('📧 Email:', email);
+      }
+      if (name) {
+        console.log('👤 Name:', name);
+      }
+    });
+  }
+
+  // Add input field focus effects
+  const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
+    });
+
+    input.addEventListener('blur', function() {
+      this.parentElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
+    });
+  });
+
+  // Add Google OAuth button feedback
+  const googleButton = document.querySelector('a[href*="google_oauth2"]');
+  if (googleButton) {
+    googleButton.addEventListener('click', function() {
+      console.log('🔐 Google OAuth sign-up initiated');
+    });
+  }
+});
+</script>
