@@ -8,6 +8,7 @@ services:
     dockerfilePath: apps/documind/api/Dockerfile
     dockerContext: apps/documind/api
     healthCheckPath: /healthz
+    postDeployCommand: ./bin/rails db:migrate
     plan: free
     dockerCommand: ./bin/render-start
     envVars:
