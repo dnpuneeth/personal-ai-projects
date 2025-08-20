@@ -102,6 +102,6 @@ services:
 
 databases:
   - name: documind-db
-    plan: starter
+    plan: free
     databaseName: documind
     user: documind
