@@ -8,13 +8,13 @@ PROJECT CHARTER (non-negotiable)
 - Name: DocuMind
 - Purpose: upload PDF → chunk + embed → RAG summary + top risks + citations → export JSON/Markdown/PDF.
 - Personal project only: use public or synthetic data; never touch employer code or infra.
-- Region: Asia (Fly.io `sin`).
+- Region: Asia (Render region closest to Singapore).
 - Backend: Rails 7.2, Ruby 3.3, Postgres 16 with `pgvector`, Redis 7, Sidekiq.
 - Embeddings: 1536-dim (match to the model used; default to OpenAI text-embedding-3-small, dimension 1536).
 - LLMs: OpenAI and/or Anthropic (keys provided via env).
 - Storage: S3-compatible (R2/S3); ActiveStorage.
 - Observability: Sentry + OpenTelemetry (OTLP).
-- CI/CD: GitHub Actions → Fly.io (zero-downtime, run migrations).
+- CI/CD: GitHub + Render (auto-deploy on push; run migrations post-deploy).
 - Cost/latency: small model for embed/retrieval; bigger only for final synthesis.
 
 DELIVERABLES (create these automatically)
@@ -32,7 +32,7 @@ DELIVERABLES (create these automatically)
 2) Python worker (optional now, hookable later) `apps/documind-worker` for CPU tasks (PDF text, chunking) with FastAPI (can be same container later).
 3) DevOps:
    - Dockerfile(s) (multi-stage) for Rails.
-   - `infra/fly.documind.toml` (region `sin`), processes: `app` (Puma) and `worker` (Sidekiq).
+   - `render.yaml` (web + worker + Postgres + Redis), processes: `app` (Rails server) and `worker` (Sidekiq).
    - `.github/workflows/deploy-documind.yml` (deploy + migrate).
    - `infra/docker-compose.dev.yml` (pg16, redis7).
    - Makefile targets: `deploy`, `migrate`, `logs`, `console`.
@@ -40,7 +40,7 @@ DELIVERABLES (create these automatically)
 4) Prompts:
    - A strict, JSON-returning analysis prompt (grounded; includes schemas for summarize/risks, answer_question, propose_redlines).
 5) Minimal Next.js shell (optional): single page upload + result view (can be stubbed).
-6) README with setup, env vars, Fly deploy steps, and eval instructions.
+6) README with setup, env vars, Render deploy steps, and eval instructions.
 7) Small eval set (5–10 Q&A YAMLs) and a script to run nightly.
 
 API SPEC (build exactly)
@@ -72,17 +72,17 @@ BUILD:
 TEST:
 - Run db:migrate, basic request specs, and a smoke test (fake document with 2–3 chunks).
 DEVOPS:
-- Produce Dockerfile, Fly.toml, GitHub Action workflow, and Makefile.
-- Emit exact commands to:
-  - `fly launch --config infra/fly.documind.toml --name documind-<handle> --region sin`
-  - create/attach Postgres, enable `CREATE EXTENSION vector;`
-  - set secrets (OPENAI_API_KEY, ANTHROPIC_API_KEY, RAILS_MASTER_KEY, S3 creds, SENTRY_DSN, OTEL endpoint, REDIS_URL)
-  - deploy + run migrations
+- Produce Dockerfile, Render Blueprint, and Makefile.
+- Emit exact steps to:
+  - Connect GitHub repo to Render and apply `render.yaml`
+  - Provision Postgres + Redis via Blueprint and enable `CREATE EXTENSION vector;`
+  - Set secrets (OPENAI_API_KEY, ANTHROPIC_API_KEY, RAILS_MASTER_KEY, S3 creds, SENTRY_DSN, OTEL endpoint)
+  - Deploy + run migrations (handled via postDeployCommand)
 OBSERVE:
 - Add Sentry init, OTEL exporter endpoint env, `/healthz`.
 PAUSE FOR APPROVAL at these gates:
   1) DB schema creation
-  2) First deploy config (Fly + secrets)
+  2) First deploy config (Render + secrets)
   3) Any model/cost-sensitive prompt change
   4) Enabling production exports (PDF/Markdown)
 
@@ -103,7 +103,7 @@ CODING CONVENTIONS
 ACCEPTANCE CRITERIA (the agent self-checks)
 - Upload → chunks & embeddings visible in DB; `embedding` dimension matches model.
 - `/summarize` returns valid JSON with ≥3 risks and ≥3 citations on a sample doc.
-- CI deploys to Fly, runs migrations automatically, app passes `/healthz`.
+- CI deploys to Render, runs migrations automatically, app passes `/healthz`.
 - Sentry receives a test error; OTEL exports basic traces.
 - p95 latency for `/summarize` < 3s on small docs (excluding first-time embed).
 

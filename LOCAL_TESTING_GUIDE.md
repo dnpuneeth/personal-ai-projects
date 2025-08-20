@@ -214,7 +214,7 @@ docker compose -f ../../infra/docker-compose.dev.yml logs -f redis
 2. **Test with real PDF documents**
 3. **Explore the AI features** (summarize, Q&A, redlines)
 4. **Monitor costs** via the `ai_events` table
-5. **Deploy to production** using the Fly.io configuration
+5. **Deploy to production** using the Render configuration
 
 ## 📚 API Documentation
 

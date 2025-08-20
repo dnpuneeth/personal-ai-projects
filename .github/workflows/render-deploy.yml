@@ -1,0 +1,38 @@
+name: Render Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+      - LICENSE
+
+jobs:
+  trigger-render-deploys:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Web deploy (Render API)
+        if: ${{ secrets.RENDER_API_KEY != '' && secrets.RENDER_WEB_SERVICE_ID != '' }}
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ secrets.RENDER_WEB_SERVICE_ID }}
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            https://api.render.com/v1/services/${SERVICE_ID}/deploys \
+            -d '{"clearCache":false}' | jq .
+
+      - name: Trigger Worker deploy (Render API)
+        if: ${{ secrets.RENDER_API_KEY != '' && secrets.RENDER_WORKER_SERVICE_ID != '' }}
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ secrets.RENDER_WORKER_SERVICE_ID }}
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            https://api.render.com/v1/services/${SERVICE_ID}/deploys \
+            -d '{"clearCache":false}' | jq .

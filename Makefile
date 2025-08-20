@@ -1,4 +1,4 @@
-.PHONY: help setup dev deploy migrate logs console test
+.PHONY: help setup dev test clean
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -20,22 +20,6 @@ setup: ## Set up the development environment
 dev: ## Start the development server
 	@echo "Starting DocuMind development server..."
 	cd apps/documind/api && bundle exec rails server -p 3000
-
-deploy: ## Deploy to Fly.io
-	@echo "Deploying to Fly.io..."
-	cd apps/documind/api && flyctl deploy --config ../../infra/fly.documind.toml
-
-migrate: ## Run database migrations on Fly.io
-	@echo "Running database migrations..."
-	cd apps/documind/api && flyctl ssh console -C "bundle exec rails db:migrate"
-
-logs: ## View Fly.io logs
-	@echo "Fetching logs..."
-	cd apps/documind/api && flyctl logs
-
-console: ## Open Rails console on Fly.io
-	@echo "Opening Rails console..."
-	cd apps/documind/api && flyctl ssh console -C "bundle exec rails console"
 
 test: ## Run tests
 	@echo "Running tests..."

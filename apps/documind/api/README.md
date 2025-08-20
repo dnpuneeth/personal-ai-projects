@@ -216,46 +216,26 @@ Uses PostgreSQL with pgvector extension for:
 
 ## 🚀 Deployment
 
-### Fly.io Deployment
+### Render Deployment
 
-1. **Install Fly CLI**:
+1. Create a new Blueprint on Render and connect your GitHub repo. Render will read `render.yaml` at the repo root and provision:
 
-   ```bash
-   curl -L https://fly.io/install.sh | sh
-   fly auth login
-   ```
+   - A Web Service (`documind-web`) using the Dockerfile at `apps/documind/api/Dockerfile`
+   - A Worker (`documind-worker`) running Sidekiq
+   - Postgres (`documind-db`) and Redis-compatible Key Value (`documind-redis`)
 
-2. **Create app**:
+2. Set required environment variables (in the Web and Worker services):
 
-   ```bash
-   fly launch --config ../../infra/fly.documind.toml --name documind-yourhandle --region sin
-   ```
+   - `RAILS_MASTER_KEY`
+   - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`
+   - `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`
+   - Optional: `SENTRY_DSN`, `OTEL_EXPORTER_OTLP_ENDPOINT`
 
-3. **Set secrets**:
+3. Deploy: Render auto-builds and deploys on push. `render.yaml` runs `bundle exec rails db:migrate` after each deploy.
 
-   ```bash
-   fly secrets set OPENAI_API_KEY=your_key
-   fly secrets set ANTHROPIC_API_KEY=your_key
-   fly secrets set RAILS_MASTER_KEY=your_key
-   fly secrets set S3_BUCKET=your_bucket
-   fly secrets set S3_REGION=your_region
-   fly secrets set S3_ACCESS_KEY_ID=your_key
-   fly secrets set S3_SECRET_ACCESS_KEY=your_secret
-   fly secrets set SENTRY_DSN=your_dsn
-   fly secrets set OTEL_EXPORTER_OTLP_ENDPOINT=your_endpoint
-   fly secrets set REDIS_URL=your_redis_url
-   ```
+4. Health check: Render uses `/healthz` for container checks.
 
-4. **Deploy**:
-
-   ```bash
-   make deploy
-   ```
-
-5. **Run migrations**:
-   ```bash
-   make migrate
-   ```
+Learn more on Render’s site: [Render — Your fastest path to production](https://render.com)
 
 ## 🧪 Testing
 

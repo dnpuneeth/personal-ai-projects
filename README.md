@@ -21,6 +21,27 @@ A powerful document analysis platform that uses AI to extract insights, identify
 
 ## 🚀 Quick Start
 
+## Render Deploy
+
+Use the included Render Blueprint and optional GitHub Actions workflow:
+
+1. Render Blueprint
+
+   - On Render, choose New → Blueprint and connect this GitHub repo.
+   - Render will read `render.yaml` and create:
+     - Web service `documind-web` (Dockerfile at `apps/documind/api/Dockerfile`)
+     - Worker `documind-worker` (Sidekiq)
+     - Postgres `documind-db` (free plan)
+     - Redis `documind-redis` (free plan)
+   - Set env vars on both services: `RAILS_MASTER_KEY`, OpenAI/Anthropic keys, and S3 creds. Optional: `SENTRY_DSN`, `OTEL_EXPORTER_OTLP_ENDPOINT`.
+   - Deploy. Migrations run post-deploy.
+
+2. GitHub Actions (optional)
+   - Add repo secrets: `RENDER_API_KEY`, `RENDER_WEB_SERVICE_ID`, `RENDER_WORKER_SERVICE_ID`.
+   - The workflow `.github/workflows/render-deploy.yml` triggers Render deploys on pushes to `main` or via manual dispatch.
+
+Docs: [Render](https://render.com)
+
 ### Prerequisites
 
 - Ruby 3.4.4
@@ -66,7 +87,10 @@ personal-ai-projects/
 │       └── PROMPT.txt      # Project specification
 ├── infra/                  # Infrastructure configuration
 │   ├── docker-compose.dev.yml
-│   └── fly.documind.toml
+│
+├── render.yaml            # Render Blueprint (web, worker, Postgres, Redis)
+├── .github/workflows/
+│   └── render-deploy.yml  # Optional GitHub Actions workflow to trigger Render deploys
 ├── LOCAL_TESTING_GUIDE.md  # Development setup guide
 ├── Makefile               # Build and deployment commands
 └── README.md              # This file
