@@ -9,7 +9,7 @@ services:
     dockerContext: apps/documind/api
     healthCheckPath: /healthz
     plan: free
-    dockerCommand: 'bash -lc "bundle exec sidekiq -c ${SIDEKIQ_CONCURRENCY:-5} & exec ./bin/thrust ./bin/rails server -b 0.0.0.0 -p $PORT"'
+    dockerCommand: ./bin/render-start
     envVars:
       - key: RAILS_ENV
         value: production

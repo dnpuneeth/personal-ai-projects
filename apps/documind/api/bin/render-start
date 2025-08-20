@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Default concurrency if not provided
+SIDEKIQ_CONCURRENCY="${SIDEKIQ_CONCURRENCY:-5}"
+
+# Start Sidekiq in background
+bundle exec sidekiq -c "$SIDEKIQ_CONCURRENCY" &
+
+# Start Rails server (Thruster wrapper)
+exec ./bin/thrust ./bin/rails server -b 0.0.0.0 -p "${PORT:-3000}"
+
+
