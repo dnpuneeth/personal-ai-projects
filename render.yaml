@@ -9,8 +9,7 @@ services:
     dockerContext: apps/documind/api
     healthCheckPath: /healthz
     plan: free
-    startCommand: ./bin/thrust ./bin/rails server -b 0.0.0.0 -p $PORT
-    preDeployCommand: bundle exec rails db:migrate
+    dockerCommand: ./bin/thrust ./bin/rails server -b 0.0.0.0 -p $PORT
     envVars:
       - key: RAILS_ENV
         value: production
@@ -59,7 +58,7 @@ services:
     dockerfilePath: apps/documind/api/Dockerfile
     dockerContext: apps/documind/api
     plan: free
-    startCommand: bundle exec sidekiq
+    dockerCommand: bundle exec sidekiq
     envVars:
       - key: RAILS_ENV
         value: production
