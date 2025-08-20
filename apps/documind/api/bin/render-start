@@ -4,6 +4,9 @@ set -euo pipefail
 # Default concurrency if not provided
 SIDEKIQ_CONCURRENCY="${SIDEKIQ_CONCURRENCY:-5}"
 
+# Prepare database (create and migrate)
+bundle exec rails db:prepare
+
 # Start Sidekiq in background
 bundle exec sidekiq -c "$SIDEKIQ_CONCURRENCY" &
 
