@@ -68,4 +68,5 @@ jobs:
           DATABASE_URL: ${{ secrets.RENDER_PG_URL }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          ACTIVE_STORAGE_SERVICE: local
         run: bundle exec rails db:migrate
