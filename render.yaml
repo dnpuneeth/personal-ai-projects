@@ -9,7 +9,7 @@ services:
     dockerContext: apps/documind/api
     healthCheckPath: /healthz
     plan: free
-    dockerCommand: ./bin/thrust ./bin/rails server -b 0.0.0.0 -p $PORT
+    dockerCommand: bash -lc "bundle exec sidekiq -c ${SIDEKIQ_CONCURRENCY:-5} & ./bin/thrust ./bin/rails server -b 0.0.0.0 -p $PORT"
     envVars:
       - key: RAILS_ENV
         value: production
@@ -48,53 +48,9 @@ services:
         sync: false
       - key: RAILS_MASTER_KEY
         sync: false
+      - key: SECRET_KEY_BASE
+        sync: false
 
-  - type: worker
-    name: documind-worker
-    runtime: docker
-    repo: https://github.com/dnpuneeth/personal-ai-projects
-    branch: main
-    autoDeploy: true
-    dockerfilePath: apps/documind/api/Dockerfile
-    dockerContext: apps/documind/api
-    plan: free
-    dockerCommand: bundle exec sidekiq
-    envVars:
-      - key: RAILS_ENV
-        value: production
-      - key: RAILS_LOG_TO_STDOUT
-        value: "true"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: documind-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: documind-redis
-          type: redis
-          property: connectionString
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: ANTHROPIC_API_KEY
-        sync: false
-      - key: EMBEDDING_MODEL
-        value: text-embedding-3-small
-      - key: LLM_MODEL
-        value: gpt-4o-mini
-      - key: S3_BUCKET
-        sync: false
-      - key: S3_REGION
-        sync: false
-      - key: S3_ACCESS_KEY_ID
-        sync: false
-      - key: S3_SECRET_ACCESS_KEY
-        sync: false
-      - key: SENTRY_DSN
-        sync: false
-      - key: OTEL_EXPORTER_OTLP_ENDPOINT
-        sync: false
-      - key: RAILS_MASTER_KEY
-        sync: false
   - type: redis
     name: documind-redis
     plan: free
