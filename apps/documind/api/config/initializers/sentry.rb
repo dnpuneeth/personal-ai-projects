@@ -7,8 +7,7 @@ Sentry.init do |config|
   # We recommend adjusting this value in production.
   config.traces_sample_rate = ENV.fetch('SENTRY_TRACES_SAMPLE_RATE', 0.1).to_f
 
-  # Enable performance monitoring
-  config.enable_tracing = true
+  # Performance monitoring is controlled via traces_sample_rate
 
   # Filter out sensitive data
   config.before_send = lambda do |event, hint|

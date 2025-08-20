@@ -73,6 +73,7 @@ gem "sentry-sidekiq", "~> 5.0"
 gem "opentelemetry-api", "~> 1.0"
 gem "opentelemetry-sdk", "~> 1.0"
 gem "opentelemetry-instrumentation-all", "~> 0.60"
+gem "opentelemetry-exporter-otlp"
 
 # AWS S3 compatible storage
 gem "aws-sdk-s3", "~> 1.0"

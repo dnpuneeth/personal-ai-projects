@@ -67,5 +67,6 @@ USER 1000:1000
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
+# Render assigns PORT (typically 10000). Expose only that single port to avoid warnings.
+EXPOSE 10000
 CMD ["./bin/render-start"]
