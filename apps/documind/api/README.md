@@ -20,7 +20,7 @@ A powerful document analysis platform that uses AI to extract insights, identify
 - **AI Models**: OpenAI GPT-4o-mini and text-embedding-3-small
 - **Storage**: S3-compatible storage (AWS S3, Cloudflare R2)
 - **Observability**: Sentry for error tracking, OpenTelemetry for tracing
-- **Deployment**: Docker + Kamal deployment configuration
+- **Deployment**: Not included in this repository (to be decided)
 
 ## 🚀 Quick Start
 
@@ -216,26 +216,7 @@ Uses PostgreSQL with pgvector extension for:
 
 ## 🚀 Deployment
 
-### Render Deployment
-
-1. Create a new Blueprint on Render and connect your GitHub repo. Render will read `render.yaml` at the repo root and provision:
-
-   - A Web Service (`documind-web`) using the Dockerfile at `apps/documind/api/Dockerfile`
-   - A Worker (`documind-worker`) running Sidekiq
-   - Postgres (`documind-db`) and Redis-compatible Key Value (`documind-redis`)
-
-2. Set required environment variables (in the Web and Worker services):
-
-   - `RAILS_MASTER_KEY`
-   - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`
-   - `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`
-   - Optional: `SENTRY_DSN`, `OTEL_EXPORTER_OTLP_ENDPOINT`
-
-3. Deploy: Render auto-builds and deploys on push. `render.yaml` runs `bundle exec rails db:migrate` after each deploy.
-
-4. Health check: Render uses `/healthz` for container checks.
-
-Learn more on Render’s site: [Render — Your fastest path to production](https://render.com)
+Infrastructure and deployment configuration have been intentionally removed. When you decide on a deployment target (Render, Fly.io, Kamal, etc.), we can add the appropriate configuration and instructions here.
 
 ## 🧪 Testing
 
@@ -408,7 +389,7 @@ bundle exec rails runner "puts ActiveRecord::Base.connection.active?"
 
 - **Main Repository**: [Personal AI Projects](../..)
 - **Local Testing Guide**: [LOCAL_TESTING_GUIDE.md](../../../LOCAL_TESTING_GUIDE.md)
-- **Infrastructure**: [Infra Configuration](../../../infra)
+- **Infrastructure**: (removed)
 - **Project Specification**: [PROMPT.txt](../PROMPT.txt)
 
 ## 🤝 Contributing

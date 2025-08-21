@@ -9,13 +9,8 @@ help: ## Show this help message
 setup: ## Set up the development environment
 	@echo "Setting up DocuMind development environment..."
 	cd apps/documind/api && bundle install
-	@echo "Starting PostgreSQL and Redis..."
-	docker-compose -f infra/docker-compose.dev.yml up -d
-	@echo "Waiting for services to be ready..."
-	sleep 10
-	@echo "Running database setup..."
-	cd apps/documind/api && bundle exec rails db:create db:migrate
-	@echo "Setup complete! Run 'make dev' to start the development server."
+	@echo "Start PostgreSQL and Redis locally (e.g., via Homebrew) and set DATABASE_URL/REDIS_URL."
+	@echo "Then run: bundle exec rails db:create db:migrate"
 
 dev: ## Start the development server
 	@echo "Starting DocuMind development server..."
@@ -26,6 +21,4 @@ test: ## Run tests
 	cd apps/documind/api && bundle exec rspec
 
 clean: ## Clean up development environment
-	@echo "Stopping services..."
-	docker-compose -f infra/docker-compose.dev.yml down -v
-	@echo "Cleanup complete." 
+	@echo "No infra services managed by Makefile anymore."
