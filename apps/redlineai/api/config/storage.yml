@@ -14,6 +14,9 @@ amazon:
   region: <%= ENV['S3_REGION'] %>
   bucket: <%= ENV['S3_BUCKET'] %>
   endpoint: <%= ENV['S3_ENDPOINT'] if ENV['S3_ENDPOINT'].present? %>
+  # Fix for Cloudflare R2 checksum issues
+  checksum_algorithm: :md5
+  force_path_style: true
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
