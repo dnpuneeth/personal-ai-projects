@@ -17,10 +17,26 @@ if [ "${DISABLE_MIGRATIONS:-false}" != "true" ]; then
   bundle exec rails db:migrate || echo "Migrations failed or not needed; continuing"
 fi
 
-# Start Rails server only (Solid Queue handles background jobs)
-echo "Starting Rails server with Solid Queue..."
+# Start Rails server and Solid Queue worker
+echo "Starting Rails server with Solid Queue worker..."
 
-# Start Puma (Solid Queue will handle background jobs automatically)
+# Start Solid Queue worker in the background
+echo "Starting Solid Queue worker..."
+bundle exec rails solid_queue:start &
+SOLID_QUEUE_PID=$!
+
+# Wait a moment for Solid Queue to start
+sleep 3
+
+# Check if Solid Queue started successfully
+if ! kill -0 $SOLID_QUEUE_PID 2>/dev/null; then
+  echo "Solid Queue failed to start, continuing without background processing..."
+  SOLID_QUEUE_PID=""
+else
+  echo "Solid Queue worker started successfully (PID: $SOLID_QUEUE_PID)"
+fi
+
+# Start Puma server
 echo "Starting Puma server..."
 bundle exec puma -C config/puma.rb -p ${PORT:-8080} &
 PUMA_PID=$!
@@ -31,15 +47,20 @@ sleep 3
 # Check if Puma started successfully
 if ! kill -0 $PUMA_PID 2>/dev/null; then
   echo "Puma failed to start, exiting..."
+  if [ ! -z "$SOLID_QUEUE_PID" ]; then
+    kill $SOLID_QUEUE_PID 2>/dev/null || true
+  fi
   exit 1
 fi
 
 echo "Puma started successfully (PID: $PUMA_PID)"
-echo "Solid Queue is configured to handle background jobs automatically"
 
 # Function to cleanup processes
 cleanup() {
   echo "Shutting down processes..."
+  if [ ! -z "$SOLID_QUEUE_PID" ]; then
+    kill $SOLID_QUEUE_PID 2>/dev/null || true
+  fi
   kill $PUMA_PID 2>/dev/null || true
   exit 0
 }
