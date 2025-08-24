@@ -1,47 +1,70 @@
+# syntax=docker/dockerfile:1.4
 ARG RUBY_VERSION=3.4.4
-FROM ruby:${RUBY_VERSION}-slim AS base
+ARG NODE_VERSION=20.11.1
+ARG YARN_VERSION=1.22.19
+ARG BUNDLER_VERSION=2.5.10
 
-ENV RAILS_ENV=production \
-    BUNDLE_DEPLOYMENT=1 \
-    BUNDLE_WITHOUT="development:test" \
-    BUNDLE_PATH=/usr/local/bundle \
-    APP_HOME=/app \
-    LANG=C.UTF-8
+# Base image for dependencies
+FROM docker.io/library/ruby:$RUBY_VERSION-slim-bookworm AS base
 
-WORKDIR ${APP_HOME}
+# Install build dependencies and runtime packages
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    libpq-dev \
+    libvips-dev \
+    libyaml-dev \
+    git \
+    curl \
+    gnupg2 \
+    ca-certificates \
+    nodejs \
+    yarn \
+    postgresql-client \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install OS packages (runtime)
-RUN apt-get update -y \
-  && apt-get install -y --no-install-recommends \
-     build-essential \
-     libvips \
-     libpq5 \
-     ca-certificates \
-     curl \
-     git \
-     tzdata \
-  && rm -rf /var/lib/apt/lists/*
+# Set up Node.js and Yarn
+RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yarn@$YARN_VERSION
 
-# Copy gem manifests and install gems
+# Set working directory
+WORKDIR /app
+
+# Install Ruby gems
+FROM base AS gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --jobs 4 --retry 3
+RUN bundle config set --local without 'development test' && \
+    bundle config set --local build.psych --with-libyaml-dir=/usr && \
+    bundle install --jobs $(nproc) --retry 3
 
-# Copy the app
+# Build assets
+FROM base AS assets
+COPY --from=gems /usr/local/bundle /usr/local/bundle
+COPY package.json yarn.lock ./
+COPY app/assets app/assets
+COPY app/javascript app/javascript
+COPY config/tailwind.config.js config/tailwind.config.js
+COPY config/initializers/assets.rb config/initializers/assets.rb
+RUN yarn install --check-files && \
+    bundle exec rails tailwindcss:build && \
+    bundle exec rails assets:precompile
+
+# Final stage for the application
+FROM base AS final
+COPY --from=gems /usr/local/bundle /usr/local/bundle
+COPY --from=assets /app/public /app/public
+COPY --from=assets /app/tmp /app/tmp
 COPY . .
 
-# Precompile assets (tailwindcss-rails binary is bundled)
-# Provide a temporary SECRET_KEY_BASE for assets:precompile
-ENV SECRET_KEY_BASE=dummy
-RUN bundle exec rails assets:precompile
+# Ensure the entrypoint script is executable
+RUN chmod +x bin/docker-entrypoint.sh
 
-# Entrypoint to run migrations then boot
-COPY bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-RUN chmod +x /usr/local/bin/docker-entrypoint
-
+# Expose port 8080
 EXPOSE 8080
-ENV PORT=8080 \
-    RAILS_SERVE_STATIC_FILES=true \
-    RAILS_LOG_TO_STDOUT=1
 
-CMD ["/usr/local/bin/docker-entrypoint"]
+# Entrypoint script to run migrations and start the server
+ENTRYPOINT ["./bin/docker-entrypoint.sh"]
 
