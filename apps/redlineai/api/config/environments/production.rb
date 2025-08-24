@@ -83,16 +83,10 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-  # Allow Koyeb to reach the app - including internal IPs for health checks
-  config.hosts = [
-    /.*\.koyeb\.app/,
-    "koyeb.app",
-    /^10\./,           # Allow internal Koyeb IPs (10.x.x.x)
-    /^172\./,          # Allow internal Koyeb IPs (172.x.x.x)
-    /^192\.168\./,     # Allow internal Koyeb IPs (192.168.x.x)
-    /^127\.0\.0\.1/,   # Allow localhost
-    /^::1$/            # Allow IPv6 localhost
-  ]
+  # TEMPORARY: Disable host checking entirely to get Koyeb working
+  # We can refine this later once the app is running and responding to health checks
+  config.hosts.clear
+  config.hosts << /.*/
   
   # Rails 8: Skip host authorization for health check endpoints
   config.host_authorization = { 
