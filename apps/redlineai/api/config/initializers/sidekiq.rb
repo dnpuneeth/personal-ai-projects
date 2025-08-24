@@ -1,6 +1,6 @@
 # Sidekiq configuration
 Sidekiq.configure_server do |config|
-  # Use only basic, guaranteed-to-work Redis options
+  # Use Upstash-compatible Redis configuration
   config.redis = { 
     url: ENV['REDIS_URL'] || 'redis://localhost:6379/0',
     network_timeout: 10
@@ -14,7 +14,7 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  # Use only basic, guaranteed-to-work Redis options
+  # Use Upstash-compatible Redis configuration
   config.redis = { 
     url: ENV['REDIS_URL'] || 'redis://localhost:6379/0',
     network_timeout: 10
