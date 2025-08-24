@@ -4,7 +4,7 @@ A collection of AI-powered applications and tools for document analysis, intelli
 
 ## 🚀 Projects
 
-### [DocuMind](apps/documind/) - AI Document Analysis Platform
+### [RedlineAI](apps/redlineai/) - AI Document Analysis Platform
 
 A powerful document analysis platform that uses AI to extract insights, identify risks, and provide intelligent summaries from PDF documents.
 
@@ -17,7 +17,7 @@ A powerful document analysis platform that uses AI to extract insights, identify
 
 **Tech Stack:** Rails 8.0.2, PostgreSQL + pgvector, Sidekiq, Redis, OpenAI GPT-4o-mini
 
-> 📖 **For detailed setup, API documentation, and development guides, see [DocuMind README](apps/documind/api/README.md)**
+> 📖 **For detailed setup, API documentation, and development guides, see [RedlineAI README](apps/redlineai/api/README.md)**
 
 ## 🚀 Quick Start
 
@@ -57,8 +57,8 @@ All infrastructure/deployment configs have been removed from this repository for
    Each project in the `apps/` directory has its own setup instructions. Navigate to the project directory and follow the README for specific setup steps.
 
    ```bash
-   # Example for DocuMind
-   cd apps/documind/api
+   # Example for RedlineAI
+   cd apps/redlineai/api
    cp env.example .env
    # Edit .env with your API keys
    bundle install
@@ -70,7 +70,7 @@ All infrastructure/deployment configs have been removed from this repository for
 ```
 personal-ai-projects/
 ├── apps/                    # Individual AI project applications
-│   └── documind/           # AI Document Analysis Platform
+│   └── redlineai/          # AI Document Analysis Platform
 │       ├── api/            # Rails backend API
 │       │   └── README.md   # 📖 Detailed setup & API docs
 │       └── PROMPT.txt      # Project specification
@@ -86,7 +86,7 @@ personal-ai-projects/
 
 This repository is designed to host multiple AI-powered projects:
 
-- **DocuMind** ✅ - AI Document Analysis Platform (Complete)
+- **RedlineAI** ✅ - AI Document Analysis Platform (Complete)
 - **ChatBot Framework** 🚧 - Customizable AI chatbot with memory
 - **Data Pipeline** 📋 - ETL workflows with AI-powered data cleaning
 - **ML Experiments** 🧪 - Various machine learning experiments and models
@@ -116,14 +116,14 @@ Each project should include:
 Each project has its own testing setup. Navigate to the project directory and follow the testing instructions in the project's README.
 
 ```bash
-# Example for DocuMind
-cd apps/documind/api
+# Example for RedlineAI
+cd apps/redlineai/api
 bundle exec rspec
 ```
 
 ## 📊 Project Features
 
-### DocuMind
+### RedlineAI
 
 - **AI Document Analysis**: PDF processing with intelligent insights
 - **Cost Optimization**: Real-time tracking and caching strategies
@@ -174,6 +174,6 @@ For general repository questions or issues:
 
 ### Quick Navigation
 
-- **DocuMind**: [apps/documind/api/README.md](apps/documind/api/README.md)
+- **RedlineAI**: [apps/redlineai/api/README.md](apps/redlineai/api/README.md)
 - **Development Guide**: [LOCAL_TESTING_GUIDE.md](LOCAL_TESTING_GUIDE.md)
 - **Infrastructure**: [infra/](infra/)

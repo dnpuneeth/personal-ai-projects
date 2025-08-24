@@ -2,7 +2,7 @@
 
 ## Overview
 
-The profile picture upload system in DocuMind provides a comprehensive solution for user profile image management, including file uploads, image processing, storage, and display. The system integrates with Rails Active Storage and provides both programmatic and user interface capabilities.
+The profile picture upload system in RedlineAI provides a comprehensive solution for user profile image management, including file uploads, image processing, storage, and display. The system integrates with Rails Active Storage and provides both programmatic and user interface capabilities.
 
 ## Architecture
 
@@ -561,4 +561,4 @@ user.profile_picture_thumbnail                    # Test thumbnail generation
 
 ---
 
-_This documentation covers the complete technical implementation of the profile picture upload system in DocuMind. For additional support or questions, refer to the main README or create an issue in the repository._
+_This documentation covers the complete technical implementation of the profile picture upload system in RedlineAI. For additional support or questions, refer to the main README or create an issue in the repository._

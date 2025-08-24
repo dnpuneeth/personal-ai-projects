@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# DocuMind API Test Script
+# RedlineAI API Test Script
 # Make sure the Rails server is running on port 3000
 
 BASE_URL="http://localhost:3000"
 
-echo "🧪 Testing DocuMind API"
+echo "🧪 Testing RedlineAI API"
 echo "========================"
 
 # Test health endpoint

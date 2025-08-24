@@ -44,7 +44,7 @@ gem "turbo-rails", "~> 1.0"
 gem "view_component", "~> 3.0"
 gem "kaminari", "~> 1.2"
 
-# DocuMind specific gems
+# RedlineAI specific gems
 # Vector database support
 gem "pgvector", "~> 0.2"
 

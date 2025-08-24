@@ -1,8 +1,8 @@
-# DocuMind Local Testing Guide
+# RedlineAI Local Testing Guide
 
 ## 🚀 Quick Start
 
-Your DocuMind API is now running locally! Here's how to test it:
+Your RedlineAI API is now running locally! Here's how to test it:
 
 ### Current Status ✅
 
@@ -19,7 +19,7 @@ Your DocuMind API is now running locally! Here's how to test it:
 Run the automated test script:
 
 ```bash
-cd apps/documind/api
+cd apps/redlineai/api
 ./test_api.sh
 ```
 
@@ -69,11 +69,11 @@ OPENAI_API_KEY=your_openai_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 # Database (already configured)
-DATABASE_URL=postgresql://localhost/documind_development
+DATABASE_URL=postgresql://localhost/redlineai_development
 REDIS_URL=redis://localhost:6379/0
 
 # Storage (optional for local testing)
-S3_BUCKET=documind-storage
+S3_BUCKET=redlineai-storage
 S3_REGION=us-east-1
 S3_ACCESS_KEY_ID=your_s3_access_key
 S3_SECRET_ACCESS_KEY=your_s3_secret_key

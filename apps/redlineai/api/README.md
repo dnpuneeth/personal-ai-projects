@@ -1,4 +1,4 @@
-# DocuMind - AI Document Analysis Platform
+# RedlineAI - AI Document Analysis Platform
 
 A powerful document analysis platform that uses AI to extract insights, identify risks, and provide intelligent summaries from PDF documents. Built with Rails 8.0.2 and modern AI technologies.
 
@@ -84,18 +84,14 @@ EMBEDDING_MODEL=text-embedding-3-small
 LLM_MODEL=gpt-4o-mini
 
 # Database
-DATABASE_URL=postgresql://localhost/documind_development
+DATABASE_URL=postgresql://localhost/redlineai_development
 REDIS_URL=redis://localhost:6379/0
 
 # Storage
-S3_BUCKET=documind-storage
+S3_BUCKET=redlineai-storage
 S3_REGION=us-east-1
 S3_ACCESS_KEY_ID=your_s3_access_key
 S3_SECRET_ACCESS_KEY=your_s3_secret_key
-
-# Observability
-SENTRY_DSN=your_sentry_dsn
-OTEL_EXPORTER_OTLP_ENDPOINT=your_otel_endpoint
 
 # Rails
 RAILS_MASTER_KEY=your_rails_master_key

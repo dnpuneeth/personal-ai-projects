@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-# Test runner script for DocuMind Minitest suite
+# Test runner script for RedlineAI Minitest suite
 
 require 'fileutils'
 
-puts "🧪 DocuMind Test Runner"
+puts "🧪 RedlineAI Test Runner"
 puts "======================"
 
 # Set test environment

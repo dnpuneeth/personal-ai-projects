@@ -1,6 +1,6 @@
-# DocuMind Test Suite
+# RedlineAI Test Suite
 
-This directory contains a comprehensive Minitest suite for the DocuMind application.
+This directory contains a comprehensive Minitest suite for the RedlineAI application.
 
 ## Test Structure
 

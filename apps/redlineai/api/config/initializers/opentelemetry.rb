@@ -4,7 +4,7 @@ if ENV['OTEL_EXPORTER_OTLP_ENDPOINT'].present?
     require 'opentelemetry/exporter/otlp'
 
     OpenTelemetry::SDK.configure do |c|
-      c.service_name = 'documind-api'
+      c.service_name = 'redlineai-api'
       c.service_version = '1.0.0'
 
       # Enable all instrumentation
