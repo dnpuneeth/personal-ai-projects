@@ -1,5 +1,19 @@
 class HealthController < ApplicationController
   def show
+    # Simple health check that doesn't depend on external services
+    # This allows Koyeb to verify the app is running without blocking on DB/Redis
+    health_status = {
+      status: 'healthy',
+      timestamp: Time.current.iso8601,
+      version: '1.0.0',
+      message: 'Application is running'
+    }
+
+    render json: health_status, status: :ok
+  end
+
+  # Optional: Add a separate detailed health endpoint for monitoring
+  def detailed
     health_status = {
       status: 'healthy',
       timestamp: Time.current.iso8601,
