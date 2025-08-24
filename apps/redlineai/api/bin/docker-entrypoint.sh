@@ -17,20 +17,10 @@ if [ "${DISABLE_MIGRATIONS:-false}" != "true" ]; then
   bundle exec rails db:migrate || echo "Migrations failed or not needed; continuing"
 fi
 
-# Start both Rails and Sidekiq using a process manager
-echo "Starting Rails server and Sidekiq workers..."
+# Start Rails server only (Solid Queue handles background jobs)
+echo "Starting Rails server with Solid Queue..."
 
-# Start Sidekiq in the background with error handling
-echo "Starting Sidekiq workers..."
-if bundle exec sidekiq -C config/sidekiq.yml; then
-  echo "Sidekiq started successfully"
-  SIDEKIQ_PID=$!
-else
-  echo "Sidekiq failed to start, continuing without background processing..."
-  SIDEKIQ_PID=""
-fi
-
-# Start Puma (this is the main requirement)
+# Start Puma (Solid Queue will handle background jobs automatically)
 echo "Starting Puma server..."
 bundle exec puma -C config/puma.rb -p ${PORT:-8080} &
 PUMA_PID=$!
@@ -45,13 +35,11 @@ if ! kill -0 $PUMA_PID 2>/dev/null; then
 fi
 
 echo "Puma started successfully (PID: $PUMA_PID)"
+echo "Solid Queue is configured to handle background jobs automatically"
 
 # Function to cleanup processes
 cleanup() {
   echo "Shutting down processes..."
-  if [ ! -z "$SIDEKIQ_PID" ]; then
-    kill $SIDEKIQ_PID 2>/dev/null || true
-  fi
   kill $PUMA_PID 2>/dev/null || true
   exit 0
 }
