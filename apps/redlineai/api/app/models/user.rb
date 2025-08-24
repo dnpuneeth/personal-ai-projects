@@ -16,13 +16,13 @@ class User < ApplicationRecord
   # Validations
   validates :name, presence: true, if: :oauth_user?
   validates :email, presence: true, uniqueness: true
-  validates :public_id, presence: true, uniqueness: true
+  validates :public_id, presence: true, uniqueness: true, allow_nil: true
 
   # Profile picture validation
   validate :acceptable_profile_picture
 
   # Callbacks
-  before_create :generate_public_id
+  before_validation :generate_public_id, on: :create
 
   # Usage limits for anonymous users
   ANONYMOUS_DOCUMENT_LIMIT = 1
