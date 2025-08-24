@@ -51,6 +51,12 @@ COPY . .
 # Ensure the entrypoint script is executable
 RUN chmod +x bin/docker-entrypoint.sh
 
+# Set environment variables for production
+ENV RAILS_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_LOG_TO_STDOUT=1 \
+    SECRET_KEY_BASE=dummy_key_for_build_only
+
 # Expose port 8080
 EXPOSE 8080
 
