@@ -18,10 +18,7 @@ Sidekiq.configure_server do |config|
       pool_timeout: 3,
       connect_timeout: 3,
       read_timeout: 3,
-      write_timeout: 3,
-      reconnect_attempts: 1,
-      reconnect_delay: 0.1,
-      reconnect_delay_max: 0.5
+      write_timeout: 3
     }
   else
     # For non-TLS connections, use the URL directly
@@ -61,10 +58,7 @@ Sidekiq.configure_client do |config|
       pool_timeout: 3,
       connect_timeout: 3,
       read_timeout: 3,
-      write_timeout: 3,
-      reconnect_attempts: 1,
-      reconnect_delay: 0.1,
-      reconnect_delay_max: 0.5
+      write_timeout: 3
     }
   else
     # For non-TLS connections, use the URL directly
