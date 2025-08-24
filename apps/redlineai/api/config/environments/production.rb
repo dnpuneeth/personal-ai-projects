@@ -43,7 +43,10 @@ Rails.application.configure do
 
   # --- Caching & Jobs ---
   config.cache_store = :solid_cache_store
-  config.active_job.queue_adapter = :sidekiq
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Temporarily disabled Sidekiq due to Redis connectivity issues
+  # config.active_job.queue_adapter = :sidekiq
   # Sidekiq configuration is handled in config/initializers/sidekiq.rb
 
   # --- Mailer (customize for your domain/app host) ---
