@@ -1,0 +1,24 @@
+---
+:concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY", 5).to_i %>
+:queues:
+  - [default, 1]
+  - [mailers, 1]
+  - [active_storage, 1]
+  - [ai_processing, 2]
+  - [document_processing, 3]
+
+:max_retries: 3
+:retry_interval: 5
+
+# Redis configuration
+:redis:
+  :url: <%= ENV['REDIS_URL'] || 'redis://localhost:6379/0' %>
+  :network_timeout: 5
+  :pool_timeout: 5
+
+# Logging
+:logfile: STDOUT
+:loglevel: INFO
+
+# Process monitoring
+:pidfile: tmp/pids/sidekiq.pid
