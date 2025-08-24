@@ -34,6 +34,10 @@ RUN bundle config set --local without 'development test' && \
 FROM base AS assets
 COPY --from=gems /usr/local/bundle /usr/local/bundle
 COPY . .
+# Set environment variables to avoid loading development gems during asset compilation
+ENV RAILS_ENV=production \
+    BUNDLE_WITHOUT="development:test" \
+    SECRET_KEY_BASE=dummy
 RUN bundle exec rails tailwindcss:build && \
     bundle exec rails assets:precompile
 
