@@ -83,10 +83,9 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-  # TEMPORARY: Disable host checking entirely to get Koyeb working
-  # We can refine this later once the app is running and responding to health checks
-  config.hosts.clear
-  config.hosts << /.*/
+  # COMPLETELY disable host checking for production to allow Koyeb health checks
+  # This is a temporary fix - we'll refine it once the app is running
+  config.hosts = nil
   
   # Rails 8: Skip host authorization for health check endpoints
   config.host_authorization = { 
