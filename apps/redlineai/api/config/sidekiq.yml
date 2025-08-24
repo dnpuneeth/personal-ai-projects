@@ -10,11 +10,8 @@
 :max_retries: 3
 :retry_interval: 5
 
-# Redis configuration
-:redis:
-  :url: <%= ENV['REDIS_URL'] || 'redis://localhost:6379/0' %>
-  :network_timeout: 5
-  :pool_timeout: 5
+# Redis configuration is handled in config/initializers/sidekiq.rb
+# This file is for queue-specific settings only
 
 # Logging
 :logfile: STDOUT

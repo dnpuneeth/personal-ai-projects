@@ -37,7 +37,8 @@ COPY . .
 # Set environment variables to avoid loading development gems during asset compilation
 ENV RAILS_ENV=production \
     BUNDLE_WITHOUT="development:test" \
-    SECRET_KEY_BASE=dummy
+    SECRET_KEY_BASE=dummy \
+    DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 RUN bundle exec rails tailwindcss:build && \
     bundle exec rails assets:precompile
 

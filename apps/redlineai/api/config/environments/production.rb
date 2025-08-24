@@ -43,8 +43,8 @@ Rails.application.configure do
 
   # --- Caching & Jobs ---
   config.cache_store = :solid_cache_store
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.active_job.queue_adapter = :sidekiq
+  # Sidekiq configuration is handled in config/initializers/sidekiq.rb
 
   # --- Mailer (customize for your domain/app host) ---
   config.action_mailer.default_url_options = {

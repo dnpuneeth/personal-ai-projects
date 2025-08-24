@@ -4,7 +4,6 @@ Sidekiq.configure_server do |config|
     url: ENV['REDIS_URL'] || 'redis://localhost:6379/0',
     # Better connection settings for Upstash
     network_timeout: 10,
-    pool_timeout: 10,
     # Add TLS support for Upstash
     ssl: true,
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
@@ -13,8 +12,7 @@ Sidekiq.configure_server do |config|
     reconnect_delay: 1.0,
     reconnect_delay_max: 5.0,
     # Connection pool settings
-    pool_size: 10,
-    pool_timeout: 10
+    pool_size: 10
   }
   
   # Try to configure Redis with fallback
@@ -26,7 +24,6 @@ Sidekiq.configure_server do |config|
     config.redis = { 
       url: ENV['REDIS_URL'] || 'redis://localhost:6379/0',
       network_timeout: 10,
-      pool_timeout: 10,
       reconnect_attempts: 5
     }
   end
@@ -43,7 +40,6 @@ Sidekiq.configure_client do |config|
     url: ENV['REDIS_URL'] || 'redis://localhost:6379/0',
     # Better connection settings for Upstash
     network_timeout: 10,
-    pool_timeout: 10,
     # Add TLS support for Upstash
     ssl: true,
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
@@ -52,8 +48,7 @@ Sidekiq.configure_client do |config|
     reconnect_delay: 1.0,
     reconnect_delay_max: 5.0,
     # Connection pool settings
-    pool_size: 10,
-    pool_timeout: 10
+    pool_size: 10
   }
   
   # Try to configure Redis with fallback
@@ -65,7 +60,6 @@ Sidekiq.configure_client do |config|
     config.redis = { 
       url: ENV['REDIS_URL'] || 'redis://localhost:6379/0',
       network_timeout: 10,
-      pool_timeout: 10,
       reconnect_attempts: 5
     }
   end
