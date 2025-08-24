@@ -87,10 +87,7 @@ Rails.application.configure do
   # This is a temporary fix - we'll refine it once the app is running
   config.hosts = nil
   
-  # Rails 8: Skip host authorization for health check endpoints
-  config.host_authorization = { 
-    exclude: ->(request) { 
-      request.path == "/healthz" || request.path == "/up" 
-    } 
-  }
+  # Rails 8: Completely disable host authorization middleware to allow all hosts
+  # This is needed because Koyeb health checks come from internal IPs
+  config.middleware.delete ActionDispatch::HostAuthorization
 end
