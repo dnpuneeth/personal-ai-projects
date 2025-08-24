@@ -64,8 +64,8 @@ class DocumentDeletionService
   
   def clear_document_cache(document_id)
     # Clear all cached AI analysis results for this document
-    pattern = "ai_analysis:#{document_id}:*"
-    Rails.cache.delete_matched(pattern)
-    Rails.logger.info "Cleared cache for document #{document_id}"
+    # Note: SolidCache doesn't support delete_matched, so we'll skip cache clearing
+    # The cache will expire naturally or can be cleared manually if needed
+    Rails.logger.info "Skipping cache clear for document #{document_id} (SolidCache limitation)"
   end
 end
