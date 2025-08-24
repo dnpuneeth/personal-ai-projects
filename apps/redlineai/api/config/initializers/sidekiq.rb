@@ -14,17 +14,24 @@ Sidekiq.configure_server do |config|
       password: uri.password,
       ssl: true,
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-      network_timeout: 5,
-      pool_timeout: 5,
-      connect_timeout: 5
+      network_timeout: 3,
+      pool_timeout: 3,
+      connect_timeout: 3,
+      read_timeout: 3,
+      write_timeout: 3,
+      reconnect_attempts: 1,
+      reconnect_delay: 0.1,
+      reconnect_delay_max: 0.5
     }
   else
     # For non-TLS connections, use the URL directly
     config.redis = { 
       url: redis_url,
-      network_timeout: 5,
-      pool_timeout: 5,
-      connect_timeout: 5
+      network_timeout: 3,
+      pool_timeout: 3,
+      connect_timeout: 3,
+      read_timeout: 3,
+      write_timeout: 3
     }
   end
   
@@ -50,17 +57,24 @@ Sidekiq.configure_client do |config|
       password: uri.password,
       ssl: true,
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-      network_timeout: 5,
-      pool_timeout: 5,
-      connect_timeout: 5
+      network_timeout: 3,
+      pool_timeout: 3,
+      connect_timeout: 3,
+      read_timeout: 3,
+      write_timeout: 3,
+      reconnect_attempts: 1,
+      reconnect_delay: 0.1,
+      reconnect_delay_max: 0.5
     }
   else
     # For non-TLS connections, use the URL directly
     config.redis = { 
       url: redis_url,
-      network_timeout: 5,
-      pool_timeout: 5,
-      connect_timeout: 5
+      network_timeout: 3,
+      pool_timeout: 3,
+      connect_timeout: 3,
+      read_timeout: 3,
+      write_timeout: 3
     }
   end
 end
