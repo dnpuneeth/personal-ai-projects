@@ -1,8 +1,5 @@
 # syntax=docker/dockerfile:1.4
 ARG RUBY_VERSION=3.4.4
-ARG NODE_VERSION=20.11.1
-ARG YARN_VERSION=1.22.19
-ARG BUNDLER_VERSION=2.5.10
 
 # Base image for dependencies
 FROM docker.io/library/ruby:$RUBY_VERSION-slim-bookworm AS base
@@ -19,16 +16,9 @@ RUN apt-get update -qq && \
     curl \
     gnupg2 \
     ca-certificates \
-    nodejs \
-    yarn \
     postgresql-client \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
-
-# Set up Node.js and Yarn
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g yarn@$YARN_VERSION
 
 # Set working directory
 WORKDIR /app
@@ -43,13 +33,8 @@ RUN bundle config set --local without 'development test' && \
 # Build assets
 FROM base AS assets
 COPY --from=gems /usr/local/bundle /usr/local/bundle
-COPY package.json yarn.lock ./
-COPY app/assets app/assets
-COPY app/javascript app/javascript
-COPY config/tailwind.config.js config/tailwind.config.js
-COPY config/initializers/assets.rb config/initializers/assets.rb
-RUN yarn install --check-files && \
-    bundle exec rails tailwindcss:build && \
+COPY . .
+RUN bundle exec rails tailwindcss:build && \
     bundle exec rails assets:precompile
 
 # Final stage for the application
