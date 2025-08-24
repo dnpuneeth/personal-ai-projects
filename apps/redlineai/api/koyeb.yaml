@@ -1,0 +1,50 @@
+services:
+  - name: redlineai
+    type: web
+    ports:
+      - port: 8080
+        protocol: http
+    instance_type: free
+    routes:
+      - path: /
+    env:
+      - key: RAILS_ENV
+        value: production
+      - key: PORT
+        value: "8080"
+      - key: RAILS_LOG_TO_STDOUT
+        value: "1"
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+      - key: ACTIVE_STORAGE_SERVICE
+        value: amazon
+    env_from:
+      - type: secret
+        name: OPENAI_API_KEY
+      - type: secret
+        name: ANTHROPIC_API_KEY
+      - type: secret
+        name: DATABASE_URL
+      - type: secret
+        name: REDIS_URL
+      - type: secret
+        name: S3_BUCKET
+      - type: secret
+        name: S3_REGION
+      - type: secret
+        name: S3_ACCESS_KEY_ID
+      - type: secret
+        name: S3_SECRET_ACCESS_KEY
+      - type: secret
+        name: S3_ENDPOINT
+      - type: secret
+        name: RAILS_MASTER_KEY
+    docker:
+      dockerfile: Dockerfile
+    healthcheck:
+      http:
+        path: /healthz
+        interval: 30s
+        timeout: 5s
+        grace_period: 60s
+

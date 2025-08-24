@@ -23,10 +23,13 @@ A powerful document analysis platform that uses AI to extract insights, identify
 
 ## Deployment
 
-All infrastructure/deployment configs have been removed from this repository for now.
+Koyeb deployment scaffolding is provided under `apps/redlineai/api/`:
 
-- No Dockerfiles, Render blueprints, or CI deploy workflows are included.
-- When you’re ready to choose a deployment path, add the relevant configs in a future change.
+- `Dockerfile` (production build)
+- `bin/docker-entrypoint.sh` (migrate then boot Puma)
+- `koyeb.yaml` (service config)
+
+See the app README for step-by-step instructions.
 
 ### Prerequisites
 

@@ -216,6 +216,32 @@ Infrastructure and deployment configuration have been intentionally removed. Whe
 
 ## 🧪 Testing
 
+## 🚀 Deploying to Koyeb (free-friendly)
+
+1) Create free accounts/services:
+   - Neon (Postgres) → create DB and run `CREATE EXTENSION IF NOT EXISTS vector;`
+   - Upstash (Redis) → create free Redis DB
+   - Cloudflare R2 → create bucket `redlineai-storage`; note `S3_ENDPOINT`
+
+2) Set required secrets in Koyeb (Project → Secrets):
+   - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY` (optional)
+   - `DATABASE_URL` (Neon), `REDIS_URL` (Upstash)
+   - `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_ENDPOINT`
+   - `RAILS_MASTER_KEY` (from `config/master.key`)
+
+3) Deploy the service:
+   - Connect repository on Koyeb and point to `apps/redlineai/api`
+   - Or use the provided `koyeb.yaml` in this directory
+   - Instance type: `free`, Exposed port: `8080`
+
+4) First boot:
+   - App runs DB migrations automatically via container entrypoint
+   - Health check at `/healthz`
+
+Notes:
+   - ActiveStorage service is set via `ACTIVE_STORAGE_SERVICE=amazon` (S3-compatible)
+   - Tailwind assets are precompiled in Docker build
+
 ### Running Tests
 
 ```bash
