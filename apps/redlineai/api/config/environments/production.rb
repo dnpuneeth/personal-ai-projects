@@ -83,6 +83,20 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-  config.hosts = [/.*\.koyeb\.app/, "koyeb.app"]
+  # Allow Koyeb to reach the app
+  config.hosts = [
+    /.*\.koyeb\.app/, 
+    "koyeb.app",
+    /^10\./,           # Allow internal Koyeb IPs
+    /^172\./,          # Allow internal Koyeb IPs  
+    /^192\.168\./      # Allow internal Koyeb IPs
+  ]
+  
+  # Skip host authorization for health check endpoints
+  config.host_authorization = { 
+    exclude: ->(request) { 
+      request.path == "/healthz" || request.path == "/up" 
+    } 
+  }
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/healthz" || request.path == "/up" } } }
 end
