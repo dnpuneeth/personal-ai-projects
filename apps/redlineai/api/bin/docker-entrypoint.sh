@@ -20,9 +20,9 @@ fi
 # Start Rails server and Solid Queue worker
 echo "Starting Rails server with Solid Queue worker..."
 
-# Start Solid Queue worker in the background
-echo "Starting Solid Queue worker..."
-bundle exec rails solid_queue:start &
+# Start Solid Queue worker in the background with reduced memory footprint
+echo "Starting Solid Queue worker with low memory config..."
+SOLID_QUEUE_THREAD_POOL_SIZE=1 bundle exec rails solid_queue:start &
 SOLID_QUEUE_PID=$!
 
 # Wait a moment for Solid Queue to start

@@ -45,6 +45,11 @@ Rails.application.configure do
   config.cache_store = :solid_cache_store
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
+  
+  # Optimize Solid Queue for low memory environments
+  config.solid_queue.dispatcher_polling_interval = 5  # Reduce polling frequency
+  config.solid_queue.worker_polling_interval = 1     # Reduce worker polling
+  config.solid_queue.supervisor_pidfile = nil        # Disable pidfile for memory
 
   # --- Mailer (customize for your domain/app host) ---
   config.action_mailer.default_url_options = {

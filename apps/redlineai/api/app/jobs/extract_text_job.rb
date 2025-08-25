@@ -27,12 +27,12 @@ class ExtractTextJob < ApplicationJob
         document.doc_chunks.create!(
           content: chunk_content,
           chunk_index: index,
-          start_token: index * 700, # Approximate token counting
-          end_token: (index + 1) * 700
+          start_token: index * 500, # Approximate token counting (reduced chunk size)
+          end_token: (index + 1) * 500
         )
         
-        # Force garbage collection every 10 chunks
-        GC.start if index % 10 == 0
+        # Force garbage collection every 5 chunks for aggressive memory management
+        GC.start if index % 5 == 0
       end
       
       Rails.logger.info "Created #{chunks.count} doc chunks"
@@ -133,7 +133,8 @@ class ExtractTextJob < ApplicationJob
         Rails.logger.info "Processing PDF with #{reader.page_count} pages"
         
         # Limit processing to reasonable number of pages to prevent memory issues
-        max_pages = 100
+        # Reduced for Koyeb's 512MB memory limit
+        max_pages = 50
         pages_to_process = [reader.page_count, max_pages].min
         
         if reader.page_count > max_pages
@@ -146,8 +147,8 @@ class ExtractTextJob < ApplicationJob
             page_text = page.text
             text += page_text + "\n"
             
-            # Force GC every 10 pages to manage memory
-            GC.start if page_num % 10 == 0
+            # Force GC every 5 pages to manage memory more aggressively
+            GC.start if page_num % 5 == 0
             
             Rails.logger.debug "Processed page #{page_num}/#{pages_to_process}"
           rescue => page_error
@@ -206,7 +207,7 @@ class ExtractTextJob < ApplicationJob
     0
   end
 
-  def chunk_text(text, chunk_size: 700, overlap: 100)
+  def chunk_text(text, chunk_size: 500, overlap: 50)
     # Simple tokenization (words as tokens)
     tokens = text.split(/\s+/)
     chunks = []
