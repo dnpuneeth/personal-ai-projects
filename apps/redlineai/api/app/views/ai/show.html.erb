@@ -252,29 +252,18 @@
 <script>
 // Ensure dark theme is properly applied
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('AI Results page loaded, checking theme...');
-
   // Check if dark theme should be applied
   const savedTheme = localStorage.getItem('theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  console.log('Saved theme:', savedTheme);
-  console.log('Prefers dark:', prefersDark);
-  console.log('Current HTML classes:', document.documentElement.className);
-
   if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark)) {
     document.documentElement.classList.add('dark');
-    console.log('Added dark class to HTML element');
   } else {
     document.documentElement.classList.remove('dark');
-    console.log('Removed dark class from HTML element');
   }
-
-  console.log('Final HTML classes:', document.documentElement.className);
 
   // Force refresh if needed
   if (document.documentElement.classList.contains('dark')) {
-    console.log('Dark theme is active, forcing refresh...');
     // Force a repaint to ensure CSS is applied
     document.body.offsetHeight;
   }
@@ -283,23 +272,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Also listen for theme changes
 window.addEventListener('storage', function(e) {
   if (e.key === 'theme') {
-    console.log('Theme changed via storage:', e.newValue);
     const savedTheme = e.newValue;
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark)) {
       document.documentElement.classList.add('dark');
-      console.log('Added dark class via storage event');
     } else {
       document.documentElement.classList.remove('dark');
-      console.log('Removed dark class via storage event');
     }
   }
 });
-
-// Debug: Check if dark class exists every second
-setInterval(function() {
-  const hasDark = document.documentElement.classList.contains('dark');
-  console.log('Dark class present:', hasDark, 'HTML classes:', document.documentElement.className);
-}, 1000);
 </script>
