@@ -202,7 +202,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const aiActionButtons = document.querySelectorAll('.ai-action-btn');
+  // Track which button is currently in loading state
+  let currentLoadingButton = null;
 
   // Listen for form submissions instead of button clicks
   document.addEventListener('submit', function(e) {
@@ -214,10 +215,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const action = submitButton.dataset.action || 'processing';
 
-      // Show loading state for clicked button
-      showLoadingState(submitButton, action);
+      // STEP 1: Reset ALL buttons to normal state first
+      resetAllButtonsToNormal();
 
-      // Disable all other AI action buttons
+      // STEP 2: Apply loading state ONLY to the clicked button
+      applyLoadingStateToButton(submitButton, action);
+
+      // STEP 3: Disable other buttons (but keep them in normal state)
       disableOtherButtons(submitButton);
 
       // Submit the form after a short delay to show loading states
@@ -233,7 +237,13 @@ document.addEventListener('DOMContentLoaded', function() {
     questionForm.addEventListener('submit', function(e) {
       const submitBtn = this.querySelector('input[type="submit"]');
       if (submitBtn) {
-        showLoadingState(submitBtn, 'question');
+        // Reset all buttons first
+        resetAllButtonsToNormal();
+
+        // Apply loading state only to this button
+        applyLoadingStateToButton(submitBtn, 'question');
+
+        // Disable other buttons
         disableOtherButtons(submitBtn);
 
         // Close modal after a short delay to show loading state
@@ -244,7 +254,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function showLoadingState(button, action) {
+  function resetAllButtonsToNormal() {
+    // Reset ALL buttons to their normal state
+    const allButtons = document.querySelectorAll('.ai-action-btn');
+    allButtons.forEach(button => {
+      // Reset text to original
+      const btnText = button.querySelector('.btn-text');
+      if (btnText) {
+        if (button.dataset.action === 'summarize') {
+          btnText.textContent = 'Summarize & Risks';
+        } else if (button.dataset.action === 'redlines') {
+          btnText.textContent = 'Propose Redlines';
+        } else if (button.dataset.action === 'question') {
+          btnText.textContent = 'Ask Question';
+        }
+      }
+
+      // Hide ALL loading spinners
+      const loadingSpinner = button.querySelector('.loading-spinner');
+      if (loadingSpinner) {
+        loadingSpinner.classList.add('hidden');
+      }
+
+      // Remove ALL loading-related classes
+      button.classList.remove('loading', 'opacity-50', 'opacity-75', 'cursor-not-allowed', 'cursor-wait');
+
+      // Re-enable all buttons
+      button.disabled = false;
+    });
+
+    // Hide loading message
+    hideLoadingMessage();
+  }
+
+  function applyLoadingStateToButton(button, action) {
+    // This function ONLY affects the specific button passed to it
+    if (!button || !button.classList.contains('ai-action-btn')) {
+      return;
+    }
+
     const btnText = button.querySelector('.btn-text');
     const loadingSpinner = button.querySelector('.loading-spinner');
 
@@ -252,23 +300,47 @@ document.addEventListener('DOMContentLoaded', function() {
       // Store original text
       button.dataset.originalText = btnText.textContent;
 
-      // Update button text and show spinner
+      // Update button text and show spinner ONLY for this button
       btnText.textContent = getLoadingText(action);
       loadingSpinner.classList.remove('hidden');
 
-      // Add loading class and styles to the button
+      // Add loading class ONLY to this button
       button.classList.add('loading');
 
-      // Show loading message
+      // Show loading message for this specific action
       showLoadingMessage(action);
     }
   }
 
   function disableOtherButtons(clickedButton) {
-    aiActionButtons.forEach(button => {
-      // Disable all AI action buttons including the clicked one
-      button.disabled = true;
-      button.classList.add('opacity-50', 'cursor-not-allowed');
+    const allButtons = document.querySelectorAll('.ai-action-btn');
+    allButtons.forEach(button => {
+      if (button !== clickedButton) {
+        // Disable other buttons but keep them in normal state
+        button.disabled = true;
+        button.classList.add('opacity-50', 'cursor-not-allowed');
+
+        // CRITICAL: Ensure other buttons have NO loading states
+        const otherSpinner = button.querySelector('.loading-spinner');
+        if (otherSpinner) {
+          otherSpinner.classList.add('hidden');
+        }
+
+        // Remove any loading classes that might have been applied
+        button.classList.remove('loading');
+
+        // Ensure other buttons show their normal text (not loading text)
+        const otherBtnText = button.querySelector('.btn-text');
+        if (otherBtnText) {
+          if (button.dataset.action === 'summarize') {
+            otherBtnText.textContent = 'Summarize & Risks';
+          } else if (button.dataset.action === 'redlines') {
+            otherBtnText.textContent = 'Propose Redlines';
+          } else if (button.dataset.action === 'question') {
+            otherBtnText.textContent = 'Ask Question';
+          }
+        }
+      }
     });
   }
 
@@ -291,41 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
       loadingMessage.classList.add('hidden');
     }
   }
-
-  function restoreButtonStates() {
-    aiActionButtons.forEach(button => {
-      button.disabled = false;
-      button.classList.remove('opacity-50', 'opacity-75', 'cursor-not-allowed', 'loading');
-
-      // Restore original button text
-      const btnText = button.querySelector('.btn-text');
-      if (btnText && button.dataset.originalText) {
-        btnText.textContent = button.dataset.originalText;
-        delete button.dataset.originalText;
-      }
-
-      // Hide loading spinner
-      const loadingSpinner = button.querySelector('.loading-spinner');
-      if (loadingSpinner) {
-        loadingSpinner.classList.add('hidden');
-      }
-    });
-
-    // Hide loading message
-    hideLoadingMessage();
-  }
-
-  // Handle page unload to restore button states
-  window.addEventListener('beforeunload', function() {
-    restoreButtonStates();
-  });
-
-  // Handle page visibility change to restore button states if user navigates away
-  document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-      restoreButtonStates();
-    }
-  });
 
   function getLoadingText(action) {
     const loadingTexts = {
