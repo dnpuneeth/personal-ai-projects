@@ -3,7 +3,9 @@
   <div class="absolute inset-0">
     <div class="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-indigo-400/10 dark:hidden"></div>
     <!-- Stronger dark overlay for contrast in dark theme -->
-    <div class="absolute inset-0 dark:bg-black/50"></div>
+    <div class="absolute inset-0 dark:bg-gradient-to-br dark:from-black/70 dark:via-black/60 dark:to-gray-900/50"></div>
+    <!-- Subtle dark mode accent glow -->
+    <div class="absolute inset-0 dark:bg-gradient-to-r dark:from-blue-900/10 dark:via-transparent dark:to-indigo-900/10"></div>
     <div class="absolute top-0 left-0 w-full h-full">
       <div class="absolute top-20 left-20 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
       <div class="absolute top-40 right-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -17,16 +19,16 @@
         <!-- Soft blurred glow behind the headline for extra depth (only in light theme to preserve contrast in dark) -->
         <div aria-hidden="true" class="pointer-events-none absolute -inset-x-16 -inset-y-2 sm:-inset-x-20 sm:-inset-y-3 rounded-full bg-gradient-to-r from-blue-500/35 to-indigo-500/35 blur-xl -z-10 dark:hidden"></div>
         <div aria-hidden="true" class="pointer-events-none absolute -inset-x-28 -inset-y-6 sm:-inset-x-36 sm:-inset-y-8 rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 blur-3xl -z-20 dark:hidden"></div>
-        <h1 class="hero-title text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl drop-shadow-[0_6px_16px_rgba(0,0,0,0.65)]">
-          <span class="block">AI-Powered</span>
-          <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:text-black">Document Analysis</span>
+        <h1 class="hero-title text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl drop-shadow-[0_6px_16px_rgba(0,0,0,0.65)] dark:drop-shadow-[0_8px_24px_rgba(0,0,0,0.8)]">
+          <span class="block text-gray-900 dark:text-white dark:font-bold">AI-Powered</span>
+          <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-300 dark:to-indigo-300 dark:text-white dark:font-extrabold">Document Analysis</span>
         </h1>
       </div>
-      <p class="hero-subtitle mt-6 max-w-3xl mx-auto text-xl text-gray-700 dark:text-gray-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
+      <p class="hero-subtitle mt-6 max-w-3xl mx-auto text-xl text-gray-700 dark:text-gray-50 dark:font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)] dark:drop-shadow-[0_4px_12px_rgba(0,0,0,0.7)]">
         Upload PDF documents and get instant AI-powered insights, risk assessments, and intelligent summaries.
       </p>
       <div class="mt-10 flex justify-center">
-        <%= link_to new_document_path, class: "group relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-lg shadow-2xl transition-all duration-300 ease-out hover:scale-105 hover:shadow-blue-500/25 ring-1 ring-white/10 dark:ring-white/10" do %>
+        <%= link_to new_document_path, class: "group relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 dark:shadow-[0_8px_32px_rgba(59,130,246,0.4)] rounded-lg shadow-2xl transition-all duration-300 ease-out hover:scale-105 hover:shadow-blue-500/25 dark:hover:shadow-blue-400/40 dark:hover:scale-110 ring-1 ring-white/10 dark:ring-blue-400/30" do %>
           <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
           <span class="relative flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
