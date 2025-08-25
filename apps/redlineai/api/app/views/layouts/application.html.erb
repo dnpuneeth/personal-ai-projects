@@ -49,10 +49,10 @@
             <% if anonymous_user? %>
               <div class="text-xs text-gray-600 dark:text-gray-400">
                 <span class="inline-flex items-center px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
-                  <%= current_user_or_anonymous.documents_remaining %>/1 uploads left
+                  <%= (session[:anonymous_documents_count] || 0) %>/1 uploads left
                 </span>
                 <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 ml-1">
-                  <%= current_user_or_anonymous.ai_actions_remaining %>/3 AI actions left
+                  <%= (session[:anonymous_ai_actions_count] || 0) %>/3 AI actions left
                 </span>
               </div>
             <% end %>

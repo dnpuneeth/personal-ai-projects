@@ -61,6 +61,22 @@ class Document < ApplicationRecord
     file_type == 'txt'
   end
 
+  def page_count
+    # For PDFs, try to get page count from metadata
+    # For now, return a default value or calculate from chunks
+    if is_pdf? && doc_chunks.any?
+      # Estimate pages based on chunk count (rough approximation)
+      # In a real implementation, you'd extract this from PDF metadata
+      [(doc_chunks.count / 2.0).ceil, 1].max
+    else
+      1
+    end
+  end
+
+  def chunk_count
+    doc_chunks.count
+  end
+
   def cleanup_temp_ai_results
     temp_ai_results.expired.delete_all
   end
