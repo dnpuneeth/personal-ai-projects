@@ -5,10 +5,13 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :omniauthable,
          omniauth_providers: [:google_oauth2]
 
+  enum :role, { user: 'user', admin: 'admin', super_admin: 'super_admin' }
+
   # Associations
   has_many :documents, dependent: :destroy
   has_many :ai_events, through: :documents
   has_many :deleted_documents, dependent: :destroy
+  has_one :subscription, dependent: :destroy
 
   # Active Storage for profile pictures
   has_one_attached :profile_picture
@@ -98,6 +101,16 @@ class User < ApplicationRecord
   def can_upload_document?
     true # Authenticated users have unlimited uploads
   end
+  
+  def can_process_document?
+    return true unless subscription # Users without subscription can process (legacy support)
+    subscription.can_process_document?
+  end
+  
+  def documents_remaining_this_month
+    return Float::INFINITY unless subscription
+    subscription.documents_remaining_this_month
+  end
 
   def can_perform_ai_action?
     true # Authenticated users have unlimited AI actions
@@ -138,6 +151,14 @@ class User < ApplicationRecord
 
   def update_activity!
     touch(:last_activity_at)
+  end
+
+  def super_admin?
+    role == 'super_admin'
+  end
+
+  def admin?
+    super_admin? || role == 'admin'
   end
 
   private

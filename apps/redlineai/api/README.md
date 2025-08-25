@@ -29,6 +29,9 @@ A powerful document analysis platform that uses AI to extract insights, identify
 - **AI-Powered Analysis**: Get comprehensive summaries, risk assessments, and answers to questions
 - **Vector Search**: Semantic search through document content using embeddings
 - **Cost Tracking**: Monitor AI usage and costs in real-time with comprehensive dashboard
+- **Subscription Management**: Free, Pro ($29/month), and Enterprise plans with usage limits
+- **Referral Program**: Earn bonus documents by referring friends and colleagues
+- **Business Analytics**: Track user growth, revenue, and key metrics (admin only)
 - **Caching System**: Rails caching with 3-hour expiry to optimize costs and performance
 - **Dark Theme Support**: Full dark/light theme toggle with system preference detection
 - **Production Ready**: Full-stack Rails application with modern UI
@@ -123,6 +126,9 @@ RAILS_MASTER_KEY=your_rails_master_key
 - 📊 **Cost Dashboard**: Track AI usage costs, token consumption, and cache efficiency
 - 🔍 **Smart Search**: RAG-powered document search with citation tracking
 - 📝 **Document Analysis**: Automated summarization, risk assessment, and Q&A
+- 💰 **Subscription Plans**: Free (5 docs/month), Pro ($29/month, 100 docs), Enterprise (custom)
+- 🎉 **Referral System**: Earn bonus documents by referring friends and colleagues
+- 📈 **Business Analytics**: Monitor user growth, revenue, and key business metrics
 - 🌙 **Dark Theme**: Seamless light/dark theme switching with profile preferences
 - ⚡ **Performance**: Intelligent caching reduces costs by up to 70%
 
@@ -431,6 +437,10 @@ bundle exec test_runner.rb
 - **Advanced analytics**: Document insights and trend analysis
 - **API rate limiting**: Usage-based access control
 - **Enhanced security**: Document encryption and access controls
+- **Stripe integration**: Automated billing and subscription management
+- **Advanced referral tracking**: Analytics and conversion optimization
+- **Team collaboration**: Shared workspaces and document sharing
+- **API marketplace**: White-label solutions for developers
 
 ### Technical Improvements
 
@@ -468,7 +478,9 @@ bundle exec rails runner "puts ActiveRecord::Base.connection.active?"
 
 - **Main Repository**: [Personal AI Projects](../..)
 - **Local Testing Guide**: [LOCAL_TESTING_GUIDE.md](../../../LOCAL_TESTING_GUIDE.md)
-- **Infrastructure**: (removed)
+- **Deployment Guide**: [DEPLOYMENT.md](./DEPLOYMENT.md)
+- **Quick Deployment**: [QUICK_DEPLOYMENT.md](./QUICK_DEPLOYMENT.md)
+- **Marketing Strategy**: [MARKETING_STRATEGY.md](./MARKETING_STRATEGY.md)
 - **Project Specification**: [PROMPT.txt](../PROMPT.txt)
 
 ## 🤝 Contributing

@@ -37,6 +37,12 @@
               <%= nav_link.call("Upload", new_document_path) %>
               <% if user_signed_in? %>
                 <%= nav_link.call("Cost", costs_path) %>
+                <%= nav_link.call("Subscription", subscription_path) %>
+                <% if current_user.admin? %>
+                  <%= nav_link.call("Admin", admin_dashboard_path) %>
+                <% elsif current_user.email.end_with?('@redlineai.com') || current_user.id == 1 %>
+                  <%= nav_link.call("Analytics", analytics_path) %>
+                <% end %>
                 <%= nav_link.call("Profile", profile_path) %>
               <% end %>
             </div>
