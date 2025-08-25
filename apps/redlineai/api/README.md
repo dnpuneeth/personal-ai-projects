@@ -2,6 +2,27 @@
 
 A powerful document analysis platform that uses AI to extract insights, identify risks, and provide intelligent summaries from PDF documents. Built with Rails 8.0.2 and modern AI technologies.
 
+## 📚 Table of Contents
+
+- [🚀 Key Features](#-key-features)
+- [🏗️ Tech Stack](#️-tech-stack)
+- [🚀 Quick Start](#-quick-start)
+- [📊 Live Features](#-live-features)
+- [🔌 API Documentation](#-api-documentation)
+- [🗄️ Database Schema](#️-database-schema)
+- [🔄 Background Jobs](#-background-jobs)
+- [🚀 Deployment](#-deployment)
+- [🧪 Testing](#-testing)
+- [📈 Monitoring & Observability](#-monitoring--observability)
+- [💰 Cost Optimization](#-cost-optimization)
+- [🔧 Development Commands](#-development-commands)
+- [🏗️ Architecture Patterns](#️-architecture-patterns)
+- [🔮 Future Enhancements](#-future-enhancements)
+- [🆘 Troubleshooting](#-troubleshooting)
+- [📚 Additional Resources](#-additional-resources)
+- [🤝 Contributing](#-contributing)
+- [📜 License](#-license)
+
 ## 🚀 Key Features
 
 - **PDF Upload & Processing**: Upload PDF documents and automatically extract text
@@ -20,7 +41,7 @@ A powerful document analysis platform that uses AI to extract insights, identify
 - **AI Models**: OpenAI GPT-4o-mini and text-embedding-3-small
 - **Storage**: S3-compatible storage (AWS S3, Cloudflare R2)
 - **Observability**: Sentry for error tracking, OpenTelemetry for tracing
-- **Deployment**: Not included in this repository (to be decided)
+- **Deployment**: Multi-platform support (Koyeb, Render, Fly.io, Railway, Docker)
 
 ## 🚀 Quick Start
 
@@ -212,35 +233,71 @@ Uses PostgreSQL with pgvector extension for:
 
 ## 🚀 Deployment
 
-Infrastructure and deployment configuration have been intentionally removed. When you decide on a deployment target (Render, Fly.io, Kamal, etc.), we can add the appropriate configuration and instructions here.
+RedlineAI is designed to be deployed to various cloud platforms. We provide detailed deployment guides for popular hosting services.
+
+### Quick Deployment Options
+
+- **Koyeb** (Recommended for free tier) - [Detailed Guide](./DEPLOYMENT.md#koyeb)
+- **Render** - [Detailed Guide](./DEPLOYMENT.md#render)
+- **Fly.io** - [Detailed Guide](./DEPLOYMENT.md#flyio)
+- **Railway** - [Detailed Guide](./DEPLOYMENT.md#railway)
+
+### Pre-deployment Checklist
+
+Before deploying, ensure you have:
+
+1. **AI API Keys**: OpenAI API key (required), Anthropic API key (optional)
+2. **Database**: PostgreSQL 16+ with pgvector extension
+3. **Redis**: Redis 7+ for background jobs
+4. **Storage**: S3-compatible storage (AWS S3, Cloudflare R2, etc.)
+5. **Rails Master Key**: Generated from `config/master.key`
+
+### Environment Variables
+
+All deployment methods require these environment variables:
+
+```bash
+# AI APIs (Required)
+OPENAI_API_KEY=your_openai_api_key
+EMBEDDING_MODEL=text-embedding-3-small
+LLM_MODEL=gpt-4o-mini
+
+# Database (Required)
+DATABASE_URL=postgresql://user:password@host:port/database
+
+# Redis (Required)
+REDIS_URL=redis://user:password@host:port/database
+
+# Storage (Required)
+S3_BUCKET=your-bucket-name
+S3_REGION=your-region
+S3_ACCESS_KEY_ID=your_access_key
+S3_SECRET_ACCESS_KEY=your_secret_key
+S3_ENDPOINT=your_s3_endpoint
+
+# Rails (Required)
+RAILS_MASTER_KEY=your_rails_master_key
+ACTIVE_STORAGE_SERVICE=amazon
+```
+
+### Health Checks
+
+After deployment, verify your application is running:
+
+```bash
+# Application health
+curl https://your-app.herokuapp.com/healthz
+
+# Database connectivity
+curl https://your-app.herokuapp.com/healthz/db
+
+# Redis connectivity
+curl https://your-app.herokuapp.com/healthz/redis
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ## 🧪 Testing
-
-## 🚀 Deploying to Koyeb (free-friendly)
-
-1) Create free accounts/services:
-   - Neon (Postgres) → create DB and run `CREATE EXTENSION IF NOT EXISTS vector;`
-   - Upstash (Redis) → create free Redis DB
-   - Cloudflare R2 → create bucket `redlineai-storage`; note `S3_ENDPOINT`
-
-2) Set required secrets in Koyeb (Project → Secrets):
-   - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY` (optional)
-   - `DATABASE_URL` (Neon), `REDIS_URL` (Upstash)
-   - `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_ENDPOINT`
-   - `RAILS_MASTER_KEY` (from `config/master.key`)
-
-3) Deploy the service:
-   - Connect repository on Koyeb and point to `apps/redlineai/api`
-   - Or use the provided `koyeb.yaml` in this directory
-   - Instance type: `free`, Exposed port: `8080`
-
-4) First boot:
-   - App runs DB migrations automatically via container entrypoint
-   - Health check at `/healthz`
-
-Notes:
-   - ActiveStorage service is set via `ACTIVE_STORAGE_SERVICE=amazon` (S3-compatible)
-   - Tailwind assets are precompiled in Docker build
 
 ### Running Tests
 
