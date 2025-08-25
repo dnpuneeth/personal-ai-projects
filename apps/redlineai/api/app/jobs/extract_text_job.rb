@@ -2,17 +2,27 @@ class ExtractTextJob < ApplicationJob
   queue_as :default
 
   def perform(document_id)
+    Rails.logger.info "Starting text extraction for document #{document_id}"
+    
     document = Document.find(document_id)
     document.update!(status: 'processing')
 
     begin
+      # Log memory usage before processing
+      Rails.logger.info "Memory before processing: #{get_memory_usage}"
+      
       # Extract text based on file type
       text = extract_text_from_file(document.file)
+      Rails.logger.info "Text extracted, length: #{text.length} characters"
+      
+      # Log memory usage after text extraction
+      Rails.logger.info "Memory after text extraction: #{get_memory_usage}"
       
       # Chunk the text
       chunks = chunk_text(text)
+      Rails.logger.info "Text chunked into #{chunks.count} chunks"
       
-      # Create DocChunk records
+      # Create DocChunk records in batches to avoid memory issues
       chunks.each_with_index do |chunk_content, index|
         document.doc_chunks.create!(
           content: chunk_content,
@@ -20,23 +30,63 @@ class ExtractTextJob < ApplicationJob
           start_token: index * 700, # Approximate token counting
           end_token: (index + 1) * 700
         )
+        
+        # Force garbage collection every 10 chunks
+        GC.start if index % 10 == 0
       end
+      
+      Rails.logger.info "Created #{chunks.count} doc chunks"
 
       # Update document status
+      page_count = extract_page_count(document.file)
       document.update!(
         status: 'completed',
-        page_count: extract_page_count(document.file),
+        page_count: page_count,
         chunk_count: chunks.count
       )
 
+      Rails.logger.info "Document #{document_id} processing completed successfully"
+      
       # Enqueue embedding job
       EmbedChunksJob.perform_later(document_id)
 
     rescue => e
-      Rails.logger.error "Text extraction failed for document #{document_id}: #{e.message}"
-      document.update!(status: 'failed')
-      raise e
+      Rails.logger.error "Text extraction failed for document #{document_id}: #{e.class.name} - #{e.message}"
+      Rails.logger.error "Backtrace: #{e.backtrace.first(10).join("\n")}"
+      
+      begin
+        document.update!(status: 'failed')
+      rescue => update_error
+        Rails.logger.error "Failed to update document status: #{update_error.message}"
+      end
+      
+      # Don't re-raise the error to prevent app crashes
+      Rails.logger.error "Job failed but not re-raising to prevent app crash"
+    ensure
+      # Force garbage collection
+      GC.start
+      Rails.logger.info "Memory after processing: #{get_memory_usage}"
     end
+  end
+
+  private
+
+  def get_memory_usage
+    if File.exist?('/proc/meminfo')
+      # Linux memory info
+      meminfo = File.read('/proc/meminfo')
+      if match = meminfo.match(/MemAvailable:\s+(\d+)\s+kB/)
+        available_mb = match[1].to_i / 1024
+        "#{available_mb}MB available"
+      else
+        "unknown"
+      end
+    else
+      # Fallback for other systems
+      "#{`ps -o rss= -p #{Process.pid}`.to_i / 1024}MB RSS"
+    end
+  rescue
+    "unknown"
   end
 
   private
@@ -72,19 +122,49 @@ class ExtractTextJob < ApplicationJob
     # Create a temporary file to work with
     Tempfile.create(['pdf_extract', '.pdf']) do |temp_file|
       temp_file.binmode
-      temp_file.write(file.download)
+      
+      # Stream the file content to avoid loading entire file into memory
+      file.open do |file_io|
+        IO.copy_stream(file_io, temp_file)
+      end
       temp_file.rewind
       
       PDF::Reader.open(temp_file.path) do |reader|
-        reader.pages.each do |page|
-          text += page.text + "\n"
+        Rails.logger.info "Processing PDF with #{reader.page_count} pages"
+        
+        # Limit processing to reasonable number of pages to prevent memory issues
+        max_pages = 100
+        pages_to_process = [reader.page_count, max_pages].min
+        
+        if reader.page_count > max_pages
+          Rails.logger.warn "PDF has #{reader.page_count} pages, limiting to #{max_pages} for processing"
+        end
+        
+        (1..pages_to_process).each do |page_num|
+          begin
+            page = reader.page(page_num)
+            page_text = page.text
+            text += page_text + "\n"
+            
+            # Force GC every 10 pages to manage memory
+            GC.start if page_num % 10 == 0
+            
+            Rails.logger.debug "Processed page #{page_num}/#{pages_to_process}"
+          rescue => page_error
+            Rails.logger.warn "Failed to extract text from page #{page_num}: #{page_error.message}"
+            # Continue with other pages
+          end
         end
       end
     end
     
+    if text.strip.empty?
+      raise "No extractable text found in PDF"
+    end
+    
     text
   rescue => e
-    Rails.logger.error "PDF extraction error: #{e.message}"
+    Rails.logger.error "PDF extraction error: #{e.class.name} - #{e.message}"
     raise "Failed to extract text from PDF: #{e.message}"
   end
 

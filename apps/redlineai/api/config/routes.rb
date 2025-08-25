@@ -16,6 +16,9 @@ Rails.application.routes.draw do
 
   # Health check
   get '/healthz', to: 'health#show'
+  
+  # Job monitoring endpoint
+  get '/admin/jobs', to: 'admin/jobs#index'
 
   # Cost tracking
   get '/costs', to: 'costs#index'
