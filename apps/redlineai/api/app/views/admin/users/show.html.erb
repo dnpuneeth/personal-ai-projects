@@ -1,0 +1,170 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">User Details</h1>
+        <p class="text-gray-600 dark:text-gray-400">Detailed information for <%= @user.display_name %></p>
+      </div>
+      <%= link_to "← Back to Users", admin_users_path, class: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- User Profile -->
+    <div class="lg:col-span-1">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="text-center">
+          <div class="mx-auto h-24 w-24 mb-4">
+            <% if @user.has_profile_picture? %>
+              <%= image_tag @user.profile_picture_thumbnail || @user.avatar_url, class: "h-24 w-24 rounded-full" %>
+            <% else %>
+              <div class="h-24 w-24 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                <span class="text-2xl font-medium text-gray-700 dark:text-gray-300"><%= @user.display_name.first.upcase %></span>
+              </div>
+            <% end %>
+          </div>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white"><%= @user.display_name %></h2>
+          <p class="text-gray-600 dark:text-gray-400"><%= @user.email %></p>
+
+          <div class="mt-4 space-y-2">
+            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full
+              <%= case @user.role
+                  when 'super_admin'
+                    'bg-red-100 text-red-800'
+                  when 'admin'
+                    'bg-blue-100 text-blue-800'
+                  else
+                    'bg-gray-100 text-gray-800'
+                  end %>">
+              <%= @user.role.titleize %>
+            </span>
+
+            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full
+              <%= @user.active_recently? ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+              <%= @user.active_recently? ? 'Active' : 'Inactive' %>
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+          <dl class="space-y-3">
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">User ID</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= @user.id %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Public ID</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= @user.public_id %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Joined</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= @user.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Activity</dt>
+              <dd class="text-sm text-gray-900 dark:text-white">
+                <%= @user.last_activity_at ? @user.last_activity_at.strftime("%B %d, %Y at %I:%M %p") : "Never" %>
+              </dd>
+            </div>
+            <% if @user.oauth_user? %>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">OAuth Provider</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= @user.provider.titleize %></dd>
+              </div>
+            <% end %>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Statistics -->
+    <div class="lg:col-span-2">
+      <div class="space-y-6">
+        <!-- Usage Statistics -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Usage Statistics</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <p class="text-2xl font-bold text-blue-600 dark:text-blue-400"><%= @user.total_documents_count %></p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Total Documents</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold text-green-600 dark:text-green-400"><%= @user.total_ai_events_count %></p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">AI Events</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold text-purple-600 dark:text-purple-400"><%= @user.total_tokens_used %></p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Tokens Used</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold text-red-600 dark:text-red-400">$<%= sprintf('%.2f', @user.total_cost_cents / 100.0) %></p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Total Cost</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription Information -->
+        <% if @user.subscription %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Subscription</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Plan</dt>
+                <dd class="text-sm text-gray-900 dark:text-white capitalize"><%= @user.subscription.plan %></dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+                <dd class="text-sm text-gray-900 dark:text-white capitalize"><%= @user.subscription.status %></dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Monthly Limit</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= @user.subscription.monthly_limit %></dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Documents Remaining</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= @user.documents_remaining_this_month %></dd>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Subscription</h3>
+            <p class="text-gray-600 dark:text-gray-400">No subscription found</p>
+          </div>
+        <% end %>
+
+        <!-- Recent Documents -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Recent Documents</h3>
+          <% if @user.documents.any? %>
+            <div class="space-y-3">
+              <% @user.documents.order(created_at: :desc).limit(5).each do |document| %>
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white"><%= document.title %></p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><%= document.created_at.strftime("%B %d, %Y") %></p>
+                  </div>
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                    <%= case document.status
+                        when 'completed'
+                          'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                        when 'processing'
+                          'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                        when 'failed'
+                          'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                        else
+                          'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                        end %>">
+                    <%= document.status.titleize %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-gray-600 dark:text-gray-400">No documents found</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

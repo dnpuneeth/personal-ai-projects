@@ -19,6 +19,35 @@
   @apply bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-200;
 }
 
+/* Subscription page dark theme overrides */
+.dark .subscription-page .bg-white {
+  @apply bg-slate-800 !important;
+}
+
+.dark .subscription-page .text-gray-900 {
+  @apply text-white !important;
+}
+
+.dark .subscription-page .text-gray-700 {
+  @apply text-gray-300 !important;
+}
+
+.dark .subscription-page .text-gray-600 {
+  @apply text-gray-400 !important;
+}
+
+.dark .subscription-page .border-gray-200 {
+  @apply border-gray-700 !important;
+}
+
+.dark .subscription-page .bg-gray-50 {
+  @apply bg-gray-700 !important;
+}
+
+.dark .subscription-page .bg-gray-200 {
+  @apply bg-gray-700 !important;
+}
+
 /* Profile picture styles */
 .profile-picture-upload {
   @apply relative;
