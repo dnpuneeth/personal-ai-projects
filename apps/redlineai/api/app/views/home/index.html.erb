@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
   <!-- Hero Section -->
   <div class="relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
@@ -56,7 +56,7 @@
   </div>
 
   <!-- Features Section -->
-  <div id="features" class="py-20 bg-white dark:bg-slate-800">
+  <div id="features" class="py-20 bg-white dark:bg-gray-800"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -150,7 +150,7 @@
   </div>
 
   <!-- Pricing Section -->
-  <div class="py-20 bg-gray-50 dark:bg-slate-900">
+  <div class="py-20 bg-gray-50 dark:bg-gray-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -163,7 +163,7 @@
 
       <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <!-- Free Tier -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
           <div class="text-center">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Free</h3>
             <div class="text-4xl font-bold text-gray-900 dark:text-white mb-2">$0</div>
@@ -241,7 +241,7 @@
         </div>
 
         <!-- Enterprise Tier -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
           <div class="text-center">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Enterprise</h3>
             <div class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Custom</div>
@@ -307,42 +307,41 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-gray-900 text-white py-12">
+  <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-4 gap-8">
-        <div>
-          <h3 class="text-xl font-bold mb-4">RedlineAI</h3>
-          <p class="text-gray-400">
+      <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+        <div class="flex-1">
+          <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">RedlineAI</h3>
+          <p class="text-gray-600 dark:text-gray-400">
             AI-powered document analysis platform that helps professionals work smarter, not harder.
           </p>
         </div>
-        <div>
-          <h4 class="font-semibold mb-4">Product</h4>
-          <ul class="space-y-2 text-gray-400">
-            <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
-            <li><a href="/pricing" class="hover:text-white transition-colors">Pricing</a></li>
-            <li><a href="/api" class="hover:text-white transition-colors">API</a></li>
-          </ul>
+        <div class="flex flex-row justify-between w-full">
+          <div class="flex-1 text-center">
+            <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Product</h4>
+            <ul class="space-y-2">
+              <li><a href="#features" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Features</a></li>
+              <li><a href="/pricing" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</a></li>
+              <li><a href="/api" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">API</a></li>
+            </ul>
+          </div>
+          <div class="flex-1 text-center">
+            <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Support</h4>
+            <ul class="space-y-2">
+              <li><a href="/docs" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Documentation</a></li>
+              <li><a href="/help" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Help Center</a></li>
+              <li><a href="mailto:support@redlineai.com" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a></li>
+            </ul>
+          </div>
+          <div class="flex-1 text-center">
+            <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Company</h4>
+            <ul class="space-y-2">
+              <li><a href="/about" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">About</a></li>
+              <li><a href="/blog" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Blog</a></li>
+              <li><a href="/careers" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Careers</a></li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <h4 class="font-semibold mb-4">Support</h4>
-          <ul class="space-y-2 text-gray-400">
-            <li><a href="/docs" class="hover:text-white transition-colors">Documentation</a></li>
-            <li><a href="/help" class="hover:text-white transition-colors">Help Center</a></li>
-            <li><a href="mailto:support@redlineai.com" class="hover:text-white transition-colors">Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-semibold mb-4">Company</h4>
-          <ul class="space-y-2 text-gray-400">
-            <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
-            <li><a href="/blog" class="hover:text-white transition-colors">Blog</a></li>
-            <li><a href="/careers" class="hover:text-white transition-colors">Careers</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-        <p>&copy; 2024 RedlineAI. All rights reserved.</p>
       </div>
     </div>
   </footer>
