@@ -24,7 +24,7 @@ class Subscription < ApplicationRecord
     if plan == 'free'
       user.documents.where('created_at >= ?', Time.current.beginning_of_month).count < 5
     elsif plan == 'pro'
-      user.documents.where('created_at >= ?', Time.current.beginning_of_month).count < 100
+      user.documents.where('created_at >= ?', Time.current.beginning_of_month).count < 1000
     else
       false
     end
@@ -39,7 +39,7 @@ class Subscription < ApplicationRecord
     when 'free'
       [5 - used, 0].max
     when 'pro'
-      [100 - used, 0].max
+      [1000 - used, 0].max
     else
       0
     end
@@ -50,7 +50,7 @@ class Subscription < ApplicationRecord
     when 'free'
       5
     when 'pro'
-      100
+      1000
     when 'enterprise'
       Float::INFINITY
     else
@@ -63,9 +63,9 @@ class Subscription < ApplicationRecord
     when 'free'
       0
     when 'pro'
-      29
+      10.99
     when 'enterprise'
-      'Custom'
+      30.99
     else
       0
     end
@@ -76,7 +76,7 @@ class Subscription < ApplicationRecord
     when 'free'
       ['5 documents per month', 'Basic AI analysis', 'Standard support']
     when 'pro'
-      ['100 documents per month', 'Advanced AI analysis', 'Priority support', 'Cost analytics']
+      ['1,000 documents per month', 'Advanced AI analysis', 'Priority support', 'Cost analytics']
     when 'enterprise'
       ['Unlimited documents', 'Custom AI models', 'Dedicated support', 'API access', 'Custom integrations']
     else

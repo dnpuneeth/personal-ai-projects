@@ -41,7 +41,7 @@
 ### **Pricing Strategy**
 
 - **Free Tier**: 5 documents/month (conversion funnel)
-- **Pro Plan**: $29/month (100 documents, priority support)
+- **Pro Plan**: $10.99/month (100 documents, priority support)
 - **Enterprise**: Custom pricing (unlimited, API access)
 
 ### **Conversion Tactics**
