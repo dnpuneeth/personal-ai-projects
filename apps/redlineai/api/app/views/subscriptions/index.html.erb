@@ -82,7 +82,7 @@
           <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-white dark:bg-gray-800 dark:border-gray-600 <%= @subscription.plan == 'pro' ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' : '' %>">
             <div class="text-center mb-4">
               <h4 class="text-xl font-semibold text-gray-900 dark:text-white">Pro Plan</h4>
-              <div class="text-3xl font-bold text-gray-900 dark:text-white mt-2">$29<span class="text-lg text-gray-600 dark:text-gray-400">/month</span></div>
+              <div class="text-3xl font-bold text-gray-900 dark:text-white mt-2">$10.99<span class="text-lg text-gray-600 dark:text-gray-400">/month</span></div>
             </div>
 
             <ul class="space-y-2 mb-6">
@@ -90,7 +90,7 @@
                 <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                100 documents per month
+                1,000 documents per month
               </li>
               <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                 <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -117,40 +117,43 @@
                 Current Plan
               </button>
             <% else %>
-              <%= link_to "Upgrade to Pro", upgrade_subscription_path(plan: 'pro'),
-                  method: :patch,
-                  class: "w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 block text-center",
-                  data: { confirm: 'Are you sure you want to upgrade to Pro plan?' } %>
+              <%= form_tag upgrade_subscription_path, method: :post, class: "w-full" do %>
+                <%= hidden_field_tag :plan, 'pro' %>
+                <%= submit_tag "Upgrade to Pro",
+                    class: "w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 cursor-pointer",
+                    data: { confirm: 'Are you sure you want to upgrade to Pro plan?' } %>
+              <% end %>
             <% end %>
           </div>
 
-          <!-- Enterprise Plan -->
-          <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-white dark:bg-gray-800 dark:border-gray-600">
+          <!-- Enterprise Plan - Disabled -->
+          <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-gray-100 dark:bg-gray-700 dark:border-gray-600 opacity-75">
             <div class="text-center mb-4">
-              <h4 class="text-xl font-semibold text-gray-900 dark:text-white">Enterprise</h4>
-              <div class="text-3xl font-bold text-gray-900 dark:text-white mt-2">Custom<span class="text-lg text-gray-600 dark:text-gray-400">/month</span></div>
+              <div class="bg-gray-500 text-black px-4 py-2 rounded-full text-sm font-semibold shadow-lg inline-block mb-4">COMING SOON</div>
+              <h4 class="text-xl font-semibold text-gray-500 dark:text-gray-400">Enterprise</h4>
+              <div class="text-3xl font-bold text-gray-500 dark:text-gray-400 mt-2">$30.99<span class="text-lg text-gray-600 dark:text-gray-400">/month</span></div>
             </div>
 
             <ul class="space-y-2 mb-6">
-              <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 Unlimited documents
               </li>
-              <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 Custom AI models
               </li>
-              <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 Dedicated support
               </li>
-              <li class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
@@ -158,10 +161,9 @@
               </li>
             </ul>
 
-            <a href="mailto:enterprise@redlineai.com?subject=Enterprise%20Plan%20Inquiry"
-               class="w-full bg-gray-900 dark:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors duration-200 block text-center">
-              Contact Sales
-            </a>
+            <button disabled class="w-full bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 py-2 px-4 rounded-lg font-medium cursor-not-allowed">
+              Coming Soon
+            </button>
           </div>
         </div>
       </div>
@@ -204,17 +206,20 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <% if @subscription.active? && @subscription.paid? %>
-          <%= link_to "Cancel Subscription", cancel_subscription_path,
-              method: :patch,
-              class: "bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 text-center",
-              data: { confirm: 'Are you sure you want to cancel your subscription? You can reactivate it anytime.' } %>
+          <a href="<%= cancel_subscription_path %>"
+             data-turbo="false"
+             class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 text-center block">
+            Cancel Subscription
+          </a>
         <% elsif @subscription.status == 'canceled' %>
-          <%= link_to "Reactivate Subscription", reactivate_subscription_path,
-              method: :patch,
-              class: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-center" %>
+          <a href="<%= reactivate_subscription_path %>"
+             data-turbo="false"
+             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-center block">
+            Reactivate Subscription
+          </a>
         <% end %>
 
-        <%= link_to "View Billing History", "#",
+        <%= link_to "View Billing History", billing_history_path,
             class: "bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 text-center" %>
       </div>
     </div>

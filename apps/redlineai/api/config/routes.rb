@@ -23,12 +23,18 @@ Rails.application.routes.draw do
   # Cost tracking
   get '/costs', to: 'costs#index'
 
+  # User billing history
+  get '/billing_history', to: 'billing_history#index'
+
   # Subscription management
   resource :subscription, only: [:show] do
     collection do
       get :index
-      patch :upgrade
+      get :upgrade
+      post :upgrade
+      get :cancel
       patch :cancel
+      get :reactivate
       patch :reactivate
     end
   end

@@ -1,0 +1,86 @@
+<div class="min-h-screen bg-gray-50 py-8 bg-white dark:bg-gray-800 subscription-page">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Cancel Subscription</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-300">Are you sure you want to cancel your subscription?</p>
+    </div>
+
+    <!-- Current Plan Info -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 mb-8">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+          Current Plan: <%= @subscription.plan.titleize %>
+        </h2>
+        <div class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          $<%= @subscription.price %><span class="text-lg text-gray-600 dark:text-gray-400">/month</span>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">
+          Status: <span class="font-medium text-green-600 dark:text-green-400"><%= @subscription.status.titleize %></span>
+        </p>
+      </div>
+
+      <!-- What Happens When You Cancel -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">What happens when you cancel?</h3>
+        <ul class="space-y-3">
+          <li class="flex items-start text-gray-700 dark:text-gray-300">
+            <svg class="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            You'll lose access to premium features at the end of your current billing period
+          </li>
+          <li class="flex items-start text-gray-700 dark:text-gray-300">
+            <svg class="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            Your document limit will be reduced to the free plan
+          </li>
+          <li class="flex items-start text-gray-700 dark:text-gray-300">
+            <svg class="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            You'll lose access to advanced AI features and priority support
+          </li>
+          <li class="flex items-start text-gray-700 dark:text-gray-300">
+            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            You can reactivate your subscription at any time
+          </li>
+          <li class="flex items-start text-gray-700 dark:text-gray-300">
+            <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            Your existing documents and data will be preserved
+          </li>
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex space-x-4">
+        <%= link_to "Keep My Subscription", subscription_path,
+            class: "flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 text-center" %>
+
+        <%= form_tag cancel_subscription_path, method: :patch, class: "flex-1" do %>
+          <%= submit_tag "Cancel Subscription",
+              class: "w-full bg-red-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-red-700 transition-colors duration-200 cursor-pointer",
+              data: { confirm: "Are you absolutely sure you want to cancel your subscription? This action cannot be undone." } %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Alternative Options -->
+    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Not ready to cancel?</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        Consider these alternatives before canceling:
+      </p>
+      <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        <p>• <strong>Downgrade</strong> to a lower plan instead of canceling</p>
+        <p>• <strong>Pause</strong> your subscription temporarily</p>
+        <p>• <strong>Contact support</strong> if you're experiencing issues</p>
+      </div>
+    </div>
+  </div>
+</div>
