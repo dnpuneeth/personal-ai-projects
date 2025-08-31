@@ -10,11 +10,40 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "profile_picture", "data-turbo-track": "reload" %>
+
+    <style>
+      /* Sticky navbar enhancements */
+      .sticky {
+        position: -webkit-sticky;
+        position: sticky;
+      }
+
+      /* Ensure navbar stays above content */
+      nav.sticky {
+        position: sticky;
+        top: 0;
+      }
+
+      /* Smooth shadow transition */
+      nav.sticky {
+        transition: box-shadow 0.2s ease-in-out;
+      }
+
+      /* Enhanced shadow on scroll */
+      nav.sticky.scrolled {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Dark mode shadow */
+      .dark nav.sticky.scrolled {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+    </style>
   </head>
 
   <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-200">
     <!-- Navigation -->
-    <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
+    <nav class="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200 backdrop-blur-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex">
@@ -150,5 +179,77 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // Enhanced sticky navbar with scroll effects
+      document.addEventListener('DOMContentLoaded', function() {
+        const navbar = document.querySelector('nav.sticky');
+
+        if (navbar) {
+          // Add scroll effect
+          window.addEventListener('scroll', function() {
+            if (window.scrollY > 10) {
+              navbar.classList.add('scrolled');
+            } else {
+              navbar.classList.remove('scrolled');
+            }
+          });
+
+          // Ensure navbar is properly positioned
+          navbar.style.position = 'sticky';
+          navbar.style.top = '0';
+          navbar.style.zIndex = '40';
+        }
+      });
+
+                  // Global chat scroll functionality that persists across Turbo navigation
+      function initializeChatScroll() {
+        const messagesContainer = document.getElementById('messages-container');
+        if (messagesContainer) {
+          // Check if we're already at the bottom to prevent unnecessary scrolling
+          const isAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10;
+          
+          if (!isAtBottom) {
+            // Use smooth scrolling for better UX
+            messagesContainer.scrollTo({
+              top: messagesContainer.scrollHeight,
+              behavior: 'smooth'
+            });
+          }
+          
+          // Single additional scroll attempt for reliability
+          setTimeout(() => {
+            if (messagesContainer) {
+              const stillNotAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight < messagesContainer.scrollHeight - 10;
+              if (stillNotAtBottom) {
+                messagesContainer.scrollTo({
+                  top: messagesContainer.scrollHeight,
+                  behavior: 'smooth'
+                });
+              }
+            }
+          }, 200);
+        }
+      }
+
+      // Listen for Turbo navigation events
+      document.addEventListener('turbo:load', initializeChatScroll);
+      document.addEventListener('turbo:render', initializeChatScroll);
+      document.addEventListener('turbo:after-render', initializeChatScroll);
+
+      // Also listen for regular page events
+      document.addEventListener('DOMContentLoaded', initializeChatScroll);
+      window.addEventListener('load', initializeChatScroll);
+
+            // Check if we're on a chat page and scroll
+      function checkChatPage() {
+        if (window.location.pathname.includes('/chat')) {
+          setTimeout(initializeChatScroll, 100);
+        }
+      }
+      // Check immediately and once more after delay
+      checkChatPage();
+      setTimeout(checkChatPage, 1000);
+    </script>
   </body>
 </html>
