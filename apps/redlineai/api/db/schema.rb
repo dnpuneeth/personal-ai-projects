@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_25_174952) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_31_135130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -54,6 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_174952) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "deleted_document_id"
+    t.boolean "cached", default: false, null: false
     t.index ["deleted_document_id"], name: "index_ai_events_on_deleted_document_id"
     t.index ["document_id"], name: "index_ai_events_on_document_id"
   end

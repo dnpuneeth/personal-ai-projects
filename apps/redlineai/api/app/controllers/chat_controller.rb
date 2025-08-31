@@ -67,10 +67,10 @@ class ChatController < ApplicationController
         tokens_used: ai_response[:tokens_used],
         latency_ms: ai_response[:latency_ms],
         cost_cents: ai_response[:cost_cents],
+        cached: ai_response[:cached] || false,
         metadata: {
           conversation_id: @conversation.id,
-          message_id: ai_message.id,
-          cached: ai_response[:cached] || false
+          message_id: ai_message.id
         }
       )
 
@@ -145,14 +145,17 @@ class ChatController < ApplicationController
 
     # Check cache first
     cache_key = "chat_response:#{@document.id}:#{Digest::MD5.hexdigest(content.downcase.strip)}"
+    Rails.logger.info "Checking cache with key: #{cache_key}"
     cached_response = Rails.cache.read(cache_key)
 
     if cached_response
-      Rails.logger.info "Cache hit for question: #{content}"
+      Rails.logger.info "🎯 CACHE HIT for question: '#{content}' - Serving from cache!"
       return cached_response.merge(
         cached: true,
         latency_ms: 0
       )
+    else
+      Rails.logger.info "❌ Cache miss for question: '#{content}' - Generating new response"
     end
 
     # Get conversation context (aggressively optimized for token usage)
@@ -213,6 +216,7 @@ class ChatController < ApplicationController
 
     # Cache the response for 1 hour
     Rails.cache.write(cache_key, result, expires_in: 1.hour)
+    Rails.logger.info "💾 Cached response for question: '#{content}' (expires in 1 hour)"
 
     # Log token usage for monitoring
     estimated_input = estimate_input_tokens(conversation_history, search_result[:chunks], content)

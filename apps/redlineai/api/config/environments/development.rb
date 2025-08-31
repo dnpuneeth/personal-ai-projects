@@ -15,16 +15,12 @@ Rails.application.configure do
   # Enable server timing.
   config.server_timing = true
 
-  # Enable/disable Action Controller caching. By default Action Controller caching is disabled.
-  # Run rails dev:cache to toggle Action Controller caching.
-  if Rails.root.join("tmp/caching-dev.txt").exist?
-    config.public_file_server.headers = { "cache-control" => "public, max-age=#{2.days.to_i}" }
-  else
-    config.action_controller.perform_caching = false
-  end
+  # Enable Action Controller caching for development to test caching functionality
+  config.action_controller.perform_caching = true
+  config.public_file_server.headers = { "cache-control" => "public, max-age=#{2.days.to_i}" }
 
-  # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  # Use file store for development to test caching functionality
+  config.cache_store = :file_store, Rails.root.join("tmp", "cache")
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
