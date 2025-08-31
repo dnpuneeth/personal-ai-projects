@@ -16,8 +16,10 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/container-queries'),
+    // Note: tailwindcss-rails gem doesn't include these plugins by default
+    // If you need them, you'll need to install them separately via npm
+    // require('@tailwindcss/forms'),
+    // require('@tailwindcss/typography'),
+    // require('@tailwindcss/container-queries'),
   ]
 }
