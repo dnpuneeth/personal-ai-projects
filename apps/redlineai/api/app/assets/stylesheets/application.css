@@ -159,3 +159,16 @@
 .dark .custom-scroll::-webkit-scrollbar-thumb:hover {
   background-color: #374151; /* gray-700 */
 }
+
+/* Modal overlay fixes */
+#question-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background-color: rgba(75, 85, 99, 0.5) !important; /* bg-gray-600 bg-opacity-50 */
+}
