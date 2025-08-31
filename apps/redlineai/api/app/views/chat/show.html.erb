@@ -1,0 +1,448 @@
+<div class="bg-white dark:bg-gray-900 min-h-screen">
+  <!-- Modern Header -->
+  <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg ">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold"><%= @document.title %></h1>
+              <p class="text-blue-100 text-sm">
+                <%= @document.file_type.upcase %> • <%= @document.page_count %> pages • <%= number_with_delimiter(@document.doc_chunks.sum { |c| c.content.length }) %> characters
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 text-white">
+            <%= @document.status.titleize %>
+          </span>
+
+          <% if @document.can_show_pdf_preview? %>
+            <a href="<%= rails_blob_url(@document.file) %>"
+               target="_blank"
+               class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-all duration-200 backdrop-blur-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              Open PDF
+            </a>
+          <% end %>
+
+          <%= link_to @document,
+              class: "inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-all duration-200 backdrop-blur-sm" do %>
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col">
+    <!-- Chat Header -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 mb-4 flex-shrink-0">
+      <div class="flex items-center justify-between">
+                  <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Chat with AI</h2>
+            <p class="text-gray-600 dark:text-gray-400">
+              Conversation: <%= @conversation.title %>
+            </p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="text-right">
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                <%= @conversation.message_count %> messages
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                Expires: <%= @conversation.expires_at.strftime("%b %d") %>
+              </div>
+            </div>
+          <%= button_to new_conversation_document_path(@document),
+              method: :post,
+              class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5",
+              data: { confirm: "Start a new conversation? This will end the current one." } do %>
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            New Chat
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- Messages Area -->
+    <div id="messages-container" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 mb-4 flex-1 overflow-y-auto">
+      <% if @messages.any? %>
+        <div class="space-y-4">
+          <% @messages.each do |message| %>
+            <%= render 'message', message: message %>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- Welcome Message -->
+        <div class="text-center py-12">
+          <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ready to Chat!</h3>
+          <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+            Hello! I'm here to help you analyze this document. You can ask me questions about the content, request summaries, or discuss specific sections. What would you like to know?
+          </p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Message Input -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 flex-shrink-0">
+      <% if @conversation.can_add_message? %>
+        <%= form_with url: send_chat_message_document_path(@document), method: :post, local: false, id: "chat-form" do |form| %>
+          <div class="flex space-x-4">
+            <%= form.text_area :content,
+                placeholder: "Ask a question about this document...",
+                class: "flex-1 form-input resize-none rounded-xl border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 px-4 py-3",
+                rows: 3,
+                required: true,
+                maxlength: 1000 %>
+            <button type="submit"
+                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed self-end"
+                    id="send-button">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              </svg>
+              Send
+              </button>
+          </div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-xs text-gray-500 dark:text-gray-400">
+              <%= @conversation.message_count %> / <%= current_user&.subscription&.pro? ? 50 : 20 %> messages
+            </div>
+            <div class="text-xs text-gray-400">
+              Press Ctrl+Enter to send
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Conversation Limit Reached</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-4">
+            You've reached the maximum number of messages for this conversation. Start a new one to continue chatting.
+          </p>
+          <%= button_to new_conversation_document_path(@document),
+              method: :post,
+              class: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" do %>
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Start New Chat
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const messagesContainer = document.getElementById('messages-container');
+  const chatForm = document.getElementById('chat-form');
+  const sendButton = document.getElementById('send-button');
+  const contentTextarea = document.querySelector('textarea[name="content"]');
+
+  // Auto-resize textarea
+  if (contentTextarea) {
+    contentTextarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Handle Ctrl+Enter to send message
+    contentTextarea.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        if (chatForm) {
+          chatForm.dispatchEvent(new Event('submit'));
+        }
+      }
+    });
+
+    // Auto-focus the textarea
+    contentTextarea.focus();
+  }
+
+  // Handle form submission
+  if (chatForm) {
+    chatForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const content = contentTextarea.value.trim();
+      if (!content) return;
+
+      // Disable form and show loading
+      sendButton.disabled = true;
+      sendButton.innerHTML = `
+        <svg class="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Sending...
+      `;
+
+            // Submit via AJAX
+      console.log('Sending request:', {
+        url: this.action,
+        method: 'POST',
+        content: content
+      });
+
+      // Use JSON for proper format detection
+      const requestBody = {
+        content: content,
+        authenticity_token: document.querySelector('meta[name="csrf-token"]').content
+      };
+
+      fetch(this.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(requestBody)
+      })
+      .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        console.log('Response URL:', response.url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        console.log('Content-Type:', contentType);
+
+        if (!contentType || !contentType.includes('application/json')) {
+          console.warn(`Expected JSON response but got: ${contentType}. Attempting to parse anyway...`);
+        }
+
+        return response.json();
+      })
+      .then(data => {
+        console.log('Response data:', data);
+
+        // Check if we have the expected data structure
+        if (data && data.success && data.user_message && data.ai_message) {
+          // Add messages to UI
+          addMessageToUI(data.user_message);
+          addMessageToUI(data.ai_message);
+
+          // Clear form
+          contentTextarea.value = '';
+          contentTextarea.style.height = 'auto';
+
+          // Scroll to bottom
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+          // Reload page to update conversation stats
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          console.error('Unexpected response structure:', data);
+          alert('Error: Unexpected response format from server');
+        }
+      })
+      .catch(error => {
+        if (error.name === 'SyntaxError' && error.message.includes('JSON')) {
+          console.error('JSON parsing error:', error);
+          alert('Error: Invalid response format from server. Please try again.');
+        } else {
+          throw error; // Re-throw other errors to be handled by the outer catch
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          response: error.response
+        });
+
+        // More specific error message
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          alert('Network error. Please check your connection and try again.');
+        } else if (error.message.includes('JSON')) {
+          alert('Server response error. Please try again.');
+        } else {
+          alert('Failed to send message. Please try again. Error: ' + error.message);
+        }
+      })
+      .finally(() => {
+        // Re-enable form
+        sendButton.disabled = false;
+        sendButton.innerHTML = `
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+          Send
+        `;
+      });
+    });
+  }
+
+  // Function to scroll to bottom
+  function scrollToBottom() {
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+
+  // Scroll to bottom on load with multiple attempts to ensure it works
+  // Use longer delays to ensure all content is rendered
+  setTimeout(scrollToBottom, 200);
+  setTimeout(scrollToBottom, 800);
+  setTimeout(scrollToBottom, 1500);
+
+  function addMessageToUI(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'flex ' + (message.role === 'user' ? 'justify-end' : 'justify-start');
+
+    messageDiv.innerHTML = `
+      <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+        message.role === 'user'
+          ? 'bg-blue-600 text-white'
+          : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
+      }">
+        <p class="text-sm">${message.content}</p>
+        <p class="text-xs mt-1 opacity-70">${new Date().toLocaleTimeString()}</p>
+      </div>
+    `;
+
+    messagesContainer.appendChild(messageDiv);
+
+    // Scroll to bottom after adding the message (not to the specific message)
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+  }
+
+  // Scroll to bottom whenever messages container changes, but only for new messages
+  const observer = new MutationObserver((mutations) => {
+    // Only scroll if new nodes are added (not removed or modified)
+    const hasNewMessages = mutations.some(mutation =>
+      mutation.type === 'childList' && mutation.addedNodes.length > 0
+    );
+
+    if (hasNewMessages) {
+      setTimeout(scrollToBottom, 100);
+    }
+  });
+  observer.observe(messagesContainer, { childList: true, subtree: true });
+
+  // Also scroll to bottom when window loads completely
+  window.addEventListener('load', scrollToBottom);
+
+  // Scroll to bottom when images and other resources finish loading
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(scrollToBottom, 200);
+  });
+
+
+  });
+</script>
+
+<style>
+/* Custom textarea styling */
+.form-input {
+  outline: none;
+  border: 1px solid;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Ensure proper placeholder spacing */
+.form-input::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+/* Dark mode placeholder */
+.dark .form-input::placeholder {
+  color: #6b7280;
+}
+
+/* Remove default textarea styling */
+.form-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  resize: none;
+}
+
+/* Smooth scrolling for messages */
+#messages-container {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styling */
+#messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+#messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#messages-container::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+#messages-container::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Dark mode scrollbar */
+.dark #messages-container::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark #messages-container::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Ensure chat interface fits properly in viewport */
+.chat-container {
+  min-height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+}
+
+/* Optimize spacing for better viewport fit */
+@media (max-height: 800px) {
+  .chat-container {
+    min-height: calc(100vh - 180px);
+    max-height: calc(100vh - 180px);
+  }
+}
+</style>
+
+

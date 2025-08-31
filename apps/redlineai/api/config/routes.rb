@@ -58,6 +58,11 @@ Rails.application.routes.draw do
       post :answer, to: 'ai#answer_question', as: :answer_ai
       post :redlines, to: 'ai#propose_redlines', as: :redlines_ai
       get :ai_results, to: 'ai#show', as: :ai_results
+
+      # Chat endpoints
+      get :chat, to: 'chat#show', as: :chat
+      post :chat, to: 'chat#send_message', as: :send_chat_message
+      post :new_conversation, to: 'chat#new_conversation', as: :new_conversation
     end
   end
 

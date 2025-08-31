@@ -58,6 +58,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_174952) do
     t.index ["document_id"], name: "index_ai_events_on_document_id"
   end
 
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.bigint "user_id"
+    t.string "title", null: false
+    t.integer "message_count", default: 0, null: false
+    t.integer "total_tokens_used", default: 0, null: false
+    t.integer "total_cost_cents", default: 0, null: false
+    t.datetime "last_message_at"
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id", "user_id"], name: "index_conversations_on_document_id_and_user_id"
+    t.index ["document_id"], name: "index_conversations_on_document_id"
+    t.index ["expires_at"], name: "index_conversations_on_expires_at"
+    t.index ["last_message_at"], name: "index_conversations_on_last_message_at"
+    t.index ["user_id"], name: "index_conversations_on_user_id"
+  end
+
   create_table "deleted_documents", force: :cascade do |t|
     t.bigint "user_id"
     t.integer "original_document_id", null: false
@@ -90,6 +108,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_174952) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["user_id"], name: "index_documents_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.string "role", null: false
+    t.text "content", null: false
+    t.jsonb "metadata", default: {}
+    t.integer "tokens_used", default: 0
+    t.integer "cost_cents", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["created_at"], name: "index_messages_on_created_at"
+    t.index ["role"], name: "index_messages_on_role"
   end
 
   create_table "referrals", force: :cascade do |t|
@@ -292,9 +324,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_174952) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "ai_events", "deleted_documents"
   add_foreign_key "ai_events", "documents"
+  add_foreign_key "conversations", "documents"
+  add_foreign_key "conversations", "users"
   add_foreign_key "deleted_documents", "users"
   add_foreign_key "doc_chunks", "documents"
   add_foreign_key "documents", "users"
+  add_foreign_key "messages", "conversations"
   add_foreign_key "referrals", "users", column: "referred_id"
   add_foreign_key "referrals", "users", column: "referrer_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
