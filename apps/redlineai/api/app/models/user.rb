@@ -101,15 +101,30 @@ class User < ApplicationRecord
   def can_upload_document?
     true # Authenticated users have unlimited uploads
   end
-  
+
   def can_process_document?
     return true unless subscription # Users without subscription can process (legacy support)
     subscription.can_process_document?
   end
-  
+
   def documents_remaining_this_month
     return Float::INFINITY unless subscription
     subscription.documents_remaining_this_month
+  end
+
+  def ai_actions_remaining
+    return Float::INFINITY unless subscription
+    # For now, return infinity for authenticated users since they have unlimited AI actions
+    # This could be updated later if we implement AI action limits for paid plans
+    Float::INFINITY
+  end
+
+  def current_plan_name
+    subscription&.plan_name || 'Free'
+  end
+
+  def current_plan
+    subscription&.plan || 'free'
   end
 
   def can_perform_ai_action?

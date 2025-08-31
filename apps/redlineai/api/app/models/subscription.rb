@@ -83,4 +83,54 @@ class Subscription < ApplicationRecord
       []
     end
   end
+
+  def plan_name
+    case plan
+    when 'free'
+      'Free'
+    when 'pro'
+      'Professional'
+    when 'enterprise'
+      'Enterprise'
+    else
+      'Unknown'
+    end
+  end
+
+  def plan_description
+    case plan
+    when 'free'
+      'Perfect for getting started'
+    when 'pro'
+      'For ambitious professionals'
+    when 'enterprise'
+      'For top performer businesses'
+    else
+      'Unknown plan'
+    end
+  end
+
+  def can_upgrade_to?(target_plan)
+    return false if target_plan == plan
+
+    case target_plan
+    when 'pro'
+      plan == 'free'
+    when 'enterprise'
+      plan == 'free' || plan == 'pro'
+    else
+      false
+    end
+  end
+
+  def upgrade_path
+    case plan
+    when 'free'
+      'pro'
+    when 'pro'
+      'enterprise'
+    else
+      nil
+    end
+  end
 end
