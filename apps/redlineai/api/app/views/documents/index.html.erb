@@ -51,9 +51,19 @@
                           <p>
                             Uploaded <%= time_ago_in_words(document.created_at) %> ago
                             <% if document.completed? %>
-                              • <%= pluralize(document.page_count, 'page') %> • <%= pluralize(document.chunk_count, 'chunk') %>
+                              • <%= document_summary_info(document) %>
                             <% end %>
                           </p>
+                          <% if document.completed? && document_processing_time(document) %>
+                            <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                              Processed in <%= document_processing_time(document) %>
+                            </p>
+                          <% end %>
+                          <% if ai_analysis_summary(document) %>
+                            <p class="mt-1 text-xs text-blue-600 dark:text-blue-400">
+                              <%= ai_analysis_summary(document) %>
+                            </p>
+                          <% end %>
                         </div>
                       </div>
                     </div>
@@ -104,4 +114,5 @@
       <% end %>
     </div>
   </div>
+</div>
 </div>

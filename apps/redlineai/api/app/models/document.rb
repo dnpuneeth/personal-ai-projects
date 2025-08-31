@@ -78,6 +78,31 @@ class Document < ApplicationRecord
     end
   end
 
+  def word_count
+    return 0 unless doc_chunks.any?
+
+    doc_chunks.sum do |chunk|
+      # Count words more accurately by splitting on whitespace and filtering out empty strings
+      chunk.content.split(/\s+/).reject(&:blank?).count
+    end
+  end
+
+  def file_size_display
+    return nil unless file.attached? && file.byte_size.present?
+
+    file.byte_size
+  end
+
+  def ai_insights_count
+    # Count different types of AI analysis performed
+    ai_events.count
+  end
+
+  def ai_analysis_types
+    # Get unique types of AI analysis performed
+    ai_events.distinct.pluck(:event_type)
+  end
+
   def content_preview(max_chunks: 15, max_length: 2000)
     return "" unless doc_chunks.any?
 

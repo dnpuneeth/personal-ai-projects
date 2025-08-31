@@ -32,18 +32,63 @@
       </div>
 
       <% if @document.completed? %>
-        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Pages</dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white"><%= @document.page_count %></dd>
+                <!-- Document Summary -->
+        <div class="mt-4 bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Document Summary</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            <!-- Pages -->
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pages</dt>
+              <dd class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @document.page_count %></dd>
+            </div>
+
+            <!-- File Size -->
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">File Size</dt>
+              <dd class="text-2xl font-semibold text-gray-900 dark:text-white">
+                <% if @document.file.attached? && @document.file.byte_size.present? %>
+                  <%= number_to_human_size(@document.file.byte_size) %>
+                <% else %>
+                  N/A
+                <% end %>
+              </dd>
+            </div>
+
+            <!-- Words -->
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Words</dt>
+              <dd class="text-2xl font-semibold text-gray-900 dark:text-white"><%= number_with_delimiter(@document.word_count) %></dd>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">AI Insights</dt>
+              <dd class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @document.ai_events.count %></dd>
+            </div>
           </div>
-          <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Chunks</dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white"><%= @document.chunk_count %></dd>
-          </div>
-          <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">AI Events</dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white"><%= @document.ai_events.count %></dd>
+
+          <!-- Additional Info Row -->
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">File Type</dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white"><%= @document.file_type.upcase %></dd>
+            </div>
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Processing Time</dt>
+              <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                <% if document_processing_time(@document) %>
+                  <%= document_processing_time(@document) %>
+                <% else %>
+                  N/A
+                <% end %>
+              </dd>
+            </div>
+            <div class="text-center">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Status</dt>
+              <dd class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                Ready for AI Analysis
+              </dd>
+            </div>
           </div>
         </div>
       <% end %>
@@ -132,33 +177,201 @@
         </div>
       </div>
 
-      <!-- AI Events History -->
+      <!-- AI Activity History -->
       <div class="mt-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">AI Activity</h2>
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Recent AI Analysis</h2>
         <div class="space-y-4">
-          <% @document.ai_events.recent.limit(10).each do |event| %>
-            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-              <div class="flex items-center">
-                <div class="flex-shrink-0">
-                  <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
-                  </svg>
+          <% @document.ai_events.recent.limit(5).each do |event| %>
+            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <% case event.event_type %>
+                  <% when 'summarization' %>
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  <% when 'question_answering' %>
+                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                    </svg>
+                  <% when 'redlining' %>
+                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" clip-rule="evenodd" />
+                    </svg>
+                  <% else %>
+                    <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  <% end %>
                 </div>
-                <div class="ml-3">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">
-                    <%= event.event_type.titleize %>
-                  </p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">
-                    <%= event.model %> • <%= pluralize(event.tokens_used, 'token') %> • <%= event.latency_seconds.round(2) %>s
-                  </p>
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">
+                      <% case event.event_type %>
+                      <% when 'summarization' %>
+                        Document Summary Generated
+                      <% when 'question_answering' %>
+                        Question Analysis
+                      <% when 'redlining' %>
+                        Redlines & Improvements
+                      <% when 'embedding' %>
+                        Document Indexed for Search
+                      <% else %>
+                        <%= event.event_type.titleize %>
+                      <% end %>
+                    </h4>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                      <%= time_ago_in_words(event.created_at) %> ago
+                    </span>
+                  </div>
+
+                  <!-- Show relevant preview based on event type -->
+                  <% case event.event_type %>
+                  <% when 'summarization' %>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                      Document analyzed for key insights and risk identification
+                    </p>
+                  <% when 'question_answering' %>
+                    <% if event.metadata&.dig('conversation_id') && event.metadata&.dig('message_id') %>
+                      <%
+                        # Try to get the actual question from the conversation
+                        conversation = Conversation.find_by(id: event.metadata['conversation_id'])
+                        user_message = conversation&.messages&.where(role: 'user')&.order(:created_at)&.last
+                        question_preview = user_message&.content&.truncate(80)
+                      %>
+                      <% if question_preview %>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                          <strong>Q:</strong> "<%= question_preview %>"
+                        </p>
+                      <% else %>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                          AI provided detailed answer with document citations
+                        </p>
+                      <% end %>
+                    <% else %>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        AI provided detailed answer with document citations
+                      </p>
+                    <% end %>
+                  <% when 'redlining' %>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                      Suggested improvements and edits for clarity and compliance
+                    </p>
+                  <% when 'embedding' %>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                      Document content indexed for AI-powered search and analysis
+                    </p>
+                  <% else %>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                      AI analysis completed successfully
+                    </p>
+                  <% end %>
                 </div>
-              </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
-                <%= time_ago_in_words(event.created_at) %> ago
               </div>
             </div>
           <% end %>
         </div>
+
+        <% if @document.ai_events.count > 5 %>
+          <div class="mt-4 text-center">
+            <button id="show-all-analyses" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+              Show all <%= @document.ai_events.count %> analyses
+            </button>
+          </div>
+
+          <!-- Hidden analyses that will be shown when expanded -->
+          <div id="all-analyses" class="hidden mt-4 space-y-4">
+            <% @document.ai_events.recent.offset(5).each do |event| %>
+              <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div class="flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <% case event.event_type %>
+                    <% when 'summarization' %>
+                      <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                      </svg>
+                    <% when 'question_answering' %>
+                      <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                      </svg>
+                    <% when 'redlining' %>
+                      <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" clip-rule="evenodd" />
+                      </svg>
+                    <% else %>
+                      <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                      </svg>
+                    <% end %>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="text-sm font-medium text-gray-900 dark:text-white">
+                        <% case event.event_type %>
+                        <% when 'summarization' %>
+                          Document Summary Generated
+                        <% when 'question_answering' %>
+                          Question Analysis
+                        <% when 'redlining' %>
+                          Redlines & Improvements
+                        <% when 'embedding' %>
+                          Document Indexed for Search
+                        <% else %>
+                          <%= event.event_type.titleize %>
+                        <% end %>
+                      </h4>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">
+                        <%= time_ago_in_words(event.created_at) %> ago
+                      </span>
+                    </div>
+
+                    <!-- Show relevant preview based on event type -->
+                    <% case event.event_type %>
+                    <% when 'summarization' %>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Document analyzed for key insights and risk identification
+                      </p>
+                    <% when 'question_answering' %>
+                      <% if event.metadata&.dig('conversation_id') && event.metadata&.dig('message_id') %>
+                        <%
+                          # Try to get the actual question from the conversation
+                          conversation = Conversation.find_by(id: event.metadata['conversation_id'])
+                          user_message = conversation&.messages&.where(role: 'user')&.order(:created_at)&.last
+                          question_preview = user_message&.content&.truncate(80)
+                        %>
+                        <% if question_preview %>
+                          <p class="text-sm text-gray-600 dark:text-gray-300">
+                            <strong>Q:</strong> "<%= question_preview %>"
+                          </p>
+                        <% else %>
+                          <p class="text-sm text-gray-600 dark:text-gray-300">
+                            AI provided detailed answer with document citations
+                          </p>
+                        <% end %>
+                      <% else %>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                          AI provided detailed answer with document citations
+                        </p>
+                      <% end %>
+                    <% when 'redlining' %>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Suggested improvements and edits for clarity and compliance
+                      </p>
+                    <% when 'embedding' %>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Document content indexed for AI-powered search and analysis
+                      </p>
+                    <% else %>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                        AI analysis completed successfully
+                      </p>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     <% elsif @document.failed? %>
       <!-- Failed State -->
@@ -359,6 +572,28 @@ document.addEventListener('DOMContentLoaded', function() {
       'processing': 'Processing your request. Please wait...'
     };
     return messageTexts[action] || 'Processing your request. Please wait...';
+  }
+
+  // Handle show all analyses functionality
+  const showAllButton = document.getElementById('show-all-analyses');
+  const allAnalyses = document.getElementById('all-analyses');
+
+  if (showAllButton && allAnalyses) {
+    showAllButton.addEventListener('click', function() {
+      if (allAnalyses.classList.contains('hidden')) {
+        // Show all analyses
+        allAnalyses.classList.remove('hidden');
+        showAllButton.textContent = 'Show less';
+        showAllButton.classList.add('text-gray-600', 'dark:text-gray-400');
+        showAllButton.classList.remove('text-blue-600', 'dark:text-blue-400');
+      } else {
+        // Hide analyses
+        allAnalyses.classList.add('hidden');
+        showAllButton.textContent = `Show all ${<%= @document.ai_events.count %>} analyses`;
+        showAllButton.classList.remove('text-gray-600', 'dark:text-gray-400');
+        showAllButton.classList.add('text-blue-600', 'dark:text-blue-400');
+      }
+    });
   }
 });
 </script>
