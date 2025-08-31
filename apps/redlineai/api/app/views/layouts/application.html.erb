@@ -201,6 +201,55 @@
           navbar.style.zIndex = '40';
         }
       });
+
+                  // Global chat scroll functionality that persists across Turbo navigation
+      function initializeChatScroll() {
+        const messagesContainer = document.getElementById('messages-container');
+        if (messagesContainer) {
+          // Check if we're already at the bottom to prevent unnecessary scrolling
+          const isAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10;
+          
+          if (!isAtBottom) {
+            // Use smooth scrolling for better UX
+            messagesContainer.scrollTo({
+              top: messagesContainer.scrollHeight,
+              behavior: 'smooth'
+            });
+          }
+          
+          // Single additional scroll attempt for reliability
+          setTimeout(() => {
+            if (messagesContainer) {
+              const stillNotAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight < messagesContainer.scrollHeight - 10;
+              if (stillNotAtBottom) {
+                messagesContainer.scrollTo({
+                  top: messagesContainer.scrollHeight,
+                  behavior: 'smooth'
+                });
+              }
+            }
+          }, 200);
+        }
+      }
+
+      // Listen for Turbo navigation events
+      document.addEventListener('turbo:load', initializeChatScroll);
+      document.addEventListener('turbo:render', initializeChatScroll);
+      document.addEventListener('turbo:after-render', initializeChatScroll);
+
+      // Also listen for regular page events
+      document.addEventListener('DOMContentLoaded', initializeChatScroll);
+      window.addEventListener('load', initializeChatScroll);
+
+            // Check if we're on a chat page and scroll
+      function checkChatPage() {
+        if (window.location.pathname.includes('/chat')) {
+          setTimeout(initializeChatScroll, 100);
+        }
+      }
+      // Check immediately and once more after delay
+      checkChatPage();
+      setTimeout(checkChatPage, 1000);
     </script>
   </body>
 </html>

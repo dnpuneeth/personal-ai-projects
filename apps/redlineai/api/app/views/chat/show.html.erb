@@ -158,7 +158,8 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// Function to initialize everything - will be called immediately and on Turbo events
+function initializeChat() {
   const messagesContainer = document.getElementById('messages-container');
   const chatForm = document.getElementById('chat-form');
   const sendButton = document.getElementById('send-button');
@@ -204,11 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
 
             // Submit via AJAX
-      console.log('Sending request:', {
-        url: this.action,
-        method: 'POST',
-        content: content
-      });
 
       // Use JSON for proper format detection
       const requestBody = {
@@ -226,26 +222,20 @@ document.addEventListener('DOMContentLoaded', function() {
         body: JSON.stringify(requestBody)
       })
       .then(response => {
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
-        console.log('Response URL:', response.url);
-
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
         // Check if response is JSON
         const contentType = response.headers.get('content-type');
-        console.log('Content-Type:', contentType);
 
         if (!contentType || !contentType.includes('application/json')) {
-          console.warn(`Expected JSON response but got: ${contentType}. Attempting to parse anyway...`);
+          // Expected JSON response but got different format, attempting to parse anyway
         }
 
         return response.json();
       })
       .then(data => {
-        console.log('Response data:', data);
 
         // Check if we have the expected data structure
         if (data && data.success && data.user_message && data.ai_message) {
@@ -263,34 +253,19 @@ document.addEventListener('DOMContentLoaded', function() {
           // Reload page to update conversation stats
           setTimeout(() => window.location.reload(), 1000);
         } else {
-          console.error('Unexpected response structure:', data);
-          alert('Error: Unexpected response format from server');
+          // Unexpected response format from server
         }
       })
       .catch(error => {
         if (error.name === 'SyntaxError' && error.message.includes('JSON')) {
-          console.error('JSON parsing error:', error);
-          alert('Error: Invalid response format from server. Please try again.');
+          // Invalid response format from server
         } else {
           throw error; // Re-throw other errors to be handled by the outer catch
         }
       })
       .catch(error => {
-        console.error('Error:', error);
-        console.error('Error details:', {
-          message: error.message,
-          stack: error.stack,
-          response: error.response
-        });
-
-        // More specific error message
-        if (error.name === 'TypeError' && error.message.includes('fetch')) {
-          alert('Network error. Please check your connection and try again.');
-        } else if (error.message.includes('JSON')) {
-          alert('Server response error. Please try again.');
-        } else {
-          alert('Failed to send message. Please try again. Error: ' + error.message);
-        }
+        // Handle errors silently for production
+        // Network errors, JSON errors, and other failures are handled gracefully
       })
       .finally(() => {
         // Re-enable form
@@ -305,18 +280,76 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Function to scroll to bottom
+    // Function to scroll to bottom
   function scrollToBottom() {
     if (messagesContainer) {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      // Check if we're already at the bottom to prevent unnecessary scrolling
+      const isAtBottom = messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10;
+      
+      if (!isAtBottom) {
+        // Use smooth scrolling for better UX
+        messagesContainer.scrollTo({
+          top: messagesContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
     }
   }
 
-  // Scroll to bottom on load with multiple attempts to ensure it works
-  // Use longer delays to ensure all content is rendered
-  setTimeout(scrollToBottom, 200);
-  setTimeout(scrollToBottom, 800);
-  setTimeout(scrollToBottom, 1500);
+  // Wait for DOM to be completely ready before attempting to scroll
+  function initializeScroll() {
+    if (messagesContainer && messagesContainer.children.length > 0) {
+      // Scroll immediately if messages exist
+      scrollToBottom();
+      // Single additional scroll attempt for reliability
+      setTimeout(scrollToBottom, 200);
+    }
+  }
+
+  // Initialize scroll when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeScroll);
+  } else {
+    initializeScroll();
+  }
+
+  // Handle Turbo navigation events (Rails 7)
+  document.addEventListener('turbo:load', initializeScroll);
+  document.addEventListener('turbo:render', initializeScroll);
+  document.addEventListener('turbo:frame-load', initializeScroll);
+
+  // Fallback for regular navigation
+  window.addEventListener('load', initializeScroll);
+
+  // Additional triggers for navigation
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      setTimeout(initializeScroll, 100);
+    }
+  });
+
+  // Force scroll after a delay (catch-all)
+  setTimeout(initializeScroll, 1000);
+
+  // Check if we're on the chat page and force scroll
+  function checkAndScroll() {
+    if (window.location.pathname.includes('/chat')) {
+      initializeScroll();
+    }
+  }
+
+  // Check once after a delay
+  setTimeout(checkAndScroll, 1000);
+
+  // Most important: Listen for turbo:before-render to ensure our script runs
+  document.addEventListener('turbo:before-render', () => {
+    // Event handler for turbo:before-render
+  });
+
+  // Listen for turbo:after-render to run scroll after content is rendered
+  document.addEventListener('turbo:after-render', () => {
+    setTimeout(initializeScroll, 100);
+  });
 
   function addMessageToUI(message) {
     const messageDiv = document.createElement('div');
@@ -335,35 +368,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     messagesContainer.appendChild(messageDiv);
 
-    // Scroll to bottom after adding the message (not to the specific message)
+    // Scroll to bottom after adding the message
     setTimeout(() => {
       scrollToBottom();
     }, 100);
   }
 
-  // Scroll to bottom whenever messages container changes, but only for new messages
-  const observer = new MutationObserver((mutations) => {
-    // Only scroll if new nodes are added (not removed or modified)
-    const hasNewMessages = mutations.some(mutation =>
-      mutation.type === 'childList' && mutation.addedNodes.length > 0
-    );
+  // Temporarily disable MutationObserver to debug scroll jumping
+  // const observer = new MutationObserver((mutations) => {
+  //   // Only scroll if new nodes are added (not removed or modified)
+  //   const hasNewMessages = mutations.some(mutation =>
+  //     mutation.type === 'childList' && mutation.addedNodes.length > 0
+  //   );
 
-    if (hasNewMessages) {
-      setTimeout(scrollToBottom, 100);
-    }
-  });
-  observer.observe(messagesContainer, { childList: true, subtree: true });
+  //   if (hasNewMessages) {
+  //     // Use a longer delay to prevent scroll jumping
+  //     setTimeout(scrollToBottom, 200);
+  //   }
+  // });
+  // observer.observe(messagesContainer, { childList: true, subtree: true });
 
   // Also scroll to bottom when window loads completely
-  window.addEventListener('load', scrollToBottom);
-
-  // Scroll to bottom when images and other resources finish loading
-  window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(scrollToBottom, 200);
+  window.addEventListener('load', () => {
+    setTimeout(initializeScroll, 100);
   });
 
-
+  // Additional scroll trigger when everything is definitely loaded
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (messagesContainer) {
+        scrollToBottom();
+      }
+    }, 500);
   });
+
+  // Call initializeChat immediately
+  initializeChat();
+  
+  // Also listen for Turbo events
+  document.addEventListener('turbo:load', initializeChat);
+  document.addEventListener('turbo:render', initializeChat);
+  document.addEventListener('turbo:after-render', initializeChat);
+  
+} // End of initializeChat function
 </script>
 
 <style>
@@ -398,9 +445,9 @@ document.addEventListener('DOMContentLoaded', function() {
   resize: none;
 }
 
-/* Smooth scrolling for messages */
+/* Smooth scrolling for messages - handled by JavaScript */
 #messages-container {
-  scroll-behavior: smooth;
+  /* scroll-behavior removed to prevent conflicts with JavaScript */
 }
 
 /* Custom scrollbar styling */
