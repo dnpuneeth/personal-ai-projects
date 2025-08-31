@@ -143,19 +143,24 @@ class ChatController < ApplicationController
   def process_chat_message(content)
     start_time = Time.current
 
-    # Check cache first
-    cache_key = "chat_response:#{@document.id}:#{Digest::MD5.hexdigest(content.downcase.strip)}"
+    # Check cache first - use only document ID and question content for cache key
+    # This ensures the same question always hits the same cache regardless of conversation context
+    normalized_content = content.downcase.strip.gsub(/\s+/, ' ')  # Normalize whitespace
+    cache_key = "chat_response:#{@document.id}:#{Digest::MD5.hexdigest(normalized_content)}"
     Rails.logger.info "Checking cache with key: #{cache_key}"
+    Rails.logger.info "Normalized question: '#{normalized_content}'"
     cached_response = Rails.cache.read(cache_key)
 
     if cached_response
       Rails.logger.info "🎯 CACHE HIT for question: '#{content}' - Serving from cache!"
+      Rails.logger.info "Cache response: #{cached_response.inspect}"
       return cached_response.merge(
         cached: true,
         latency_ms: 0
       )
     else
       Rails.logger.info "❌ Cache miss for question: '#{content}' - Generating new response"
+      Rails.logger.info "Cache key used: #{cache_key}"
     end
 
     # Get conversation context (aggressively optimized for token usage)
@@ -215,6 +220,8 @@ class ChatController < ApplicationController
     }
 
     # Cache the response for 1 hour
+    Rails.logger.info "💾 Storing in cache with key: #{cache_key}"
+    Rails.logger.info "Cache data: #{result.inspect}"
     Rails.cache.write(cache_key, result, expires_in: 1.hour)
     Rails.logger.info "💾 Cached response for question: '#{content}' (expires in 1 hour)"
 
