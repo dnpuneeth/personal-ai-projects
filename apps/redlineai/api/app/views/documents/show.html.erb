@@ -274,7 +274,7 @@
 
         <% if @document.ai_events.count > 5 %>
           <div class="mt-4 text-center">
-            <button id="show-all-analyses" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+            <button id="show-all-analyses" class="text-blue-600 dark:text-blue-400 hover:underline text-sm" data-analyses-count="<%= @document.ai_events.count %>">
               Show all <%= @document.ai_events.count %> analyses
             </button>
           </div>
@@ -573,27 +573,52 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     return messageTexts[action] || 'Processing your request. Please wait...';
   }
+});
 
-  // Handle show all analyses functionality
+// Function to initialize the show all analyses toggle (GLOBAL SCOPE)
+function initializeShowAllAnalysesToggle() {
   const showAllButton = document.getElementById('show-all-analyses');
   const allAnalyses = document.getElementById('all-analyses');
 
   if (showAllButton && allAnalyses) {
-    showAllButton.addEventListener('click', function() {
+    // Remove any existing event listeners to prevent duplicates
+    const newButton = showAllButton.cloneNode(true);
+    showAllButton.parentNode.replaceChild(newButton, showAllButton);
+
+    newButton.addEventListener('click', function() {
       if (allAnalyses.classList.contains('hidden')) {
         // Show all analyses
         allAnalyses.classList.remove('hidden');
-        showAllButton.textContent = 'Show less';
-        showAllButton.classList.add('text-gray-600', 'dark:text-gray-400');
-        showAllButton.classList.remove('text-blue-600', 'dark:text-blue-400');
+        newButton.textContent = 'Show less';
+        newButton.classList.add('text-gray-600', 'dark:text-gray-400');
+        newButton.classList.remove('text-blue-600', 'dark:text-blue-400');
       } else {
         // Hide analyses
         allAnalyses.classList.add('hidden');
-        showAllButton.textContent = `Show all ${<%= @document.ai_events.count %>} analyses`;
-        showAllButton.classList.remove('text-gray-600', 'dark:text-gray-400');
-        showAllButton.classList.add('text-blue-600', 'dark:text-blue-400');
+        newButton.textContent = `Show all ${newButton.dataset.analysesCount} analyses`;
+        newButton.classList.remove('text-gray-600', 'dark:text-gray-400');
+        newButton.classList.add('text-blue-600', 'dark:text-blue-400');
       }
     });
+  } else {
+    console.log('Show all analyses elements not found:', {
+      button: !!showAllButton,
+      analyses: !!allAnalyses
+    });
   }
-});
+}
+
+// Initialize on DOM content loaded
+document.addEventListener('DOMContentLoaded', initializeShowAllAnalysesToggle);
+
+// Also initialize on window load as a fallback
+window.addEventListener('load', initializeShowAllAnalysesToggle);
+
+// Initialize immediately if DOM is already ready
+if (document.readyState === 'loading') {
+  // DOM is still loading, wait for DOMContentLoaded
+} else {
+  // DOM is already ready, initialize immediately
+  initializeShowAllAnalysesToggle();
+}
 </script>

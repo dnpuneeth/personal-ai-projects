@@ -9,67 +9,75 @@
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
       <!-- Profile Information -->
-      <div class="xl:col-span-1 space-y-6">
+      <div class="xl:col-span-1 space-y-8">
         <div class="bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
           <div class="px-6 py-6">
-            <div class="flex items-center">
+            <div class="flex items-center space-x-6">
+              <!-- Profile Picture with Enhanced Design -->
               <% if @user.has_profile_picture? %>
                 <div class="relative group cursor-pointer" onclick="openProfilePictureModal('<%= @user.profile_picture.attached? ? url_for(@user.profile_picture) : @user.avatar_url %>', '<%= @user.display_name %>')">
-                  <% if @user.profile_picture.attached? %>
-                    <%= image_tag @user.profile_picture_thumbnail,
-                        class: "h-24 w-24 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 hover:scale-105 transition-transform duration-200",
-                        alt: @user.display_name %>
-                  <% else %>
-                    <img class="h-24 w-24 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 hover:scale-105 transition-transform duration-200"
-                         src="<%= @user.avatar_url %>"
-                         alt="<%= @user.display_name %>">
-                  <% end %>
-
-                  <!-- Hover overlay with view icon -->
-                  <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                  </div>
-
-                  <!-- Profile picture source indicator -->
-                  <div class="absolute -bottom-1 -right-1">
+                  <div class="relative">
                     <% if @user.profile_picture.attached? %>
-                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        Custom
-                      </span>
+                      <%= image_tag @user.profile_picture_thumbnail,
+                          class: "h-20 w-20 rounded-full object-cover border-4 border-white dark:border-gray-600 shadow-lg hover:scale-105 transition-transform duration-200",
+                          alt: @user.display_name %>
                     <% else %>
-                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                        Google
-                      </span>
+                      <img class="h-20 w-20 rounded-full object-cover border-4 border-white dark:border-gray-600 shadow-lg hover:scale-105 transition-transform duration-200"
+                           src="<%= @user.avatar_url %>"
+                           alt="<%= @user.display_name %>">
                     <% end %>
+
+                    <!-- Hover overlay with view icon -->
+                    <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
+                    </div>
+
+                    <!-- Profile picture source indicator -->
+                    <div class="absolute -bottom-2 -right-2">
+                      <% if @user.profile_picture.attached? %>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 shadow-sm">
+                          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                          </svg>
+                          Custom
+                        </span>
+                      <% else %>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 shadow-sm">
+                          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                          </svg>
+                          Google
+                        </span>
+                      <% end %>
+                    </div>
                   </div>
                 </div>
               <% else %>
-                <div class="h-24 w-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center border-2 border-gray-200 dark:border-gray-600">
-                  <span class="text-3xl font-bold text-white">
-                    <%= @user.display_name.first.upcase %>
-                  </span>
+                <div class="relative">
+                  <div class="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center border-4 border-white dark:border-gray-600 shadow-lg">
+                    <span class="text-2xl font-bold text-white">
+                      <%= @user.display_name.first.upcase %>
+                    </span>
+                  </div>
                 </div>
               <% end %>
-              <div class="ml-4 flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+
+              <div class="flex-1">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                   <%= @user.display_name %>
                 </h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-3">
                   <%= @user.email %>
                 </p>
-                <% if @user.oauth_user? %>
-                  <div class="mt-2">
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800">
-                      <svg class="w-3 h-3 mr-1.5" viewBox="0 0 24 24">
+
+                <!-- Account Status with Better Spacing -->
+                <div class="flex items-center space-x-3">
+                  <% if @user.oauth_user? %>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800 shadow-sm">
+                      <svg class="w-4 h-4 mr-1.5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -77,47 +85,141 @@
                       </svg>
                       Google Account
                     </span>
+                  <% end %>
+
+                  <!-- Subscription Status (if available) -->
+                  <% if @user.subscription.present? %>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 shadow-sm">
+                      <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <%= @user.subscription.plan_name %> Plan
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Enhanced Action Buttons -->
+            <div class="mt-6 flex space-x-4">
+              <%= link_to profile_edit_path,
+                  class: "flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center py-3 px-6 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md font-medium" do %>
+                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit Profile
+              <% end %>
+
+              <% if @user.subscription.present? %>
+                <%= link_to subscription_path,
+                    class: "flex-1 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 text-gray-700 dark:text-gray-200 text-center py-3 px-6 rounded-xl hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-700 transition-all duration-200 shadow-sm hover:shadow-md font-medium" do %>
+                  <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                  </svg>
+                  Subscription
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Overview -->
+        <div class="bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+          <div class="px-6 py-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-5">Account Overview</h3>
+
+            <!-- Responsive Metrics Dashboard -->
+            <div class="grid grid-cols-1 gap-4 mb-6">
+              <!-- Main Stats Row - Responsive Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-lg p-4 text-center min-h-[80px] flex flex-col justify-center">
+                  <dt class="text-sm font-medium text-blue-600 dark:text-blue-300 mb-2">Documents</dt>
+                  <dd class="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl font-bold text-blue-900 dark:text-blue-100 break-words">
+                    <%= number_with_delimiter(@total_documents) %>
+                  </dd>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-lg p-4 text-center min-h-[80px] flex flex-col justify-center">
+                  <dt class="text-sm font-medium text-green-600 dark:text-green-300 mb-2">AI Actions</dt>
+                  <dd class="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl font-bold text-green-900 dark:text-green-100 break-words">
+                    <%= number_with_delimiter(@total_ai_actions) %>
+                  </dd>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 rounded-lg p-4 text-center min-h-[80px] flex flex-col justify-center">
+                  <dt class="text-sm font-medium text-purple-600 dark:text-purple-300 mb-2">Total Cost</dt>
+                  <dd class="text-2xl sm:text-3xl lg:text-2xl xl:text-3xl font-bold text-purple-900 dark:text-purple-100 break-words">
+                    $<%= number_with_delimiter(sprintf("%.2f", @total_cost)) %>
+                  </dd>
+                </div>
+              </div>
+
+              <!-- Account Info Row -->
+              <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-6">
+                    <div class="text-center">
+                      <dt class="text-xs font-medium text-gray-600 dark:text-gray-400">Member Since</dt>
+                      <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                        <%= @user.created_at.strftime("%B %Y") %>
+                      </dd>
+                    </div>
+
+                    <div class="text-center">
+                      <dt class="text-xs font-medium text-gray-600 dark:text-gray-400">Status</dt>
+                      <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                        <% if @user.subscription.present? %>
+                          <%= @user.subscription.plan_name %>
+                        <% else %>
+                          Free Plan
+                        <% end %>
+                      </dd>
+                    </div>
                   </div>
+
+                  <div class="text-right">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      <%= ((Time.current - @user.created_at) / 1.month).round %> months ago
+                    </p>
+                    <% if @user.subscription.present? %>
+                      <%= link_to "Manage", subscription_path, class: "text-xs text-blue-600 hover:underline" %>
+                    <% else %>
+                      <%= link_to "Upgrade", subscriptions_path, class: "text-xs text-blue-600 hover:underline" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="border-t pt-4">
+              <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick Actions</h4>
+              <div class="flex space-x-3">
+                <%= link_to new_document_path,
+                    class: "flex-1 bg-blue-600 text-white text-center py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium" do %>
+                  <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                  </svg>
+                  Upload Document
+                <% end %>
+
+                <%= link_to costs_path,
+                    class: "flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-center py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium" do %>
+                  <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                  </svg>
+                  View Analytics
                 <% end %>
               </div>
             </div>
-            <div class="mt-6">
-              <%= link_to "Edit Profile", profile_edit_path,
-                  class: "w-full bg-blue-600 border border-transparent rounded-lg py-2.5 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors duration-200 shadow-sm" %>
-            </div>
           </div>
         </div>
 
-        <!-- Account Statistics -->
-        <div class="bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
-          <div class="px-6 py-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-5">Account Statistics</h3>
-            <dl class="grid grid-cols-2 gap-4">
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 ring-1 ring-gray-200 dark:ring-gray-700 shadow-inner">
-                <dt class="text-sm font-medium text-gray-600 dark:text-gray-300">Total Documents</dt>
-                <dd class="mt-1 text-2xl font-bold text-gray-900 dark:text-white"><%= @total_documents %></dd>
-              </div>
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 ring-1 ring-gray-200 dark:ring-gray-700 shadow-inner">
-                <dt class="text-sm font-medium text-gray-600 dark:text-gray-300">AI Actions</dt>
-                <dd class="mt-1 text-2xl font-bold text-gray-900 dark:text-white"><%= @total_ai_actions %></dd>
-              </div>
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 ring-1 ring-gray-200 dark:ring-gray-700 shadow-inner">
-                <dt class="text-sm font-medium text-gray-600 dark:text-gray-300">Total Cost</dt>
-                <dd class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">$<%= sprintf("%.2f", @total_cost) %></dd>
-              </div>
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 ring-1 ring-gray-200 dark:ring-gray-700 shadow-inner">
-                <dt class="text-sm font-medium text-gray-600 dark:text-gray-300">Member Since</dt>
-                <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-                  <%= @user.created_at.strftime("%B %Y") %>
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
+
       </div>
 
       <!-- Recent Activity -->
-      <div class="xl:col-span-2 space-y-6">
+      <div class="xl:col-span-2 space-y-8">
         <!-- Recent Documents -->
         <div class="bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
           <div class="px-6 py-6">
@@ -176,54 +278,97 @@
                 </svg>
                 <p class="text-gray-500 dark:text-gray-400 mt-2">No documents uploaded yet.</p>
                 <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Upload your first document to get started.</p>
+                <div class="mt-4">
+                  <%= link_to "Upload Document", new_document_path,
+                      class: "inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors" %>
+                </div>
               </div>
             <% end %>
           </div>
         </div>
 
-        <!-- Recent AI Actions -->
+        <!-- Recent AI Insights -->
         <div class="bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
           <div class="px-6 py-6">
             <div class="flex items-center justify-between mb-5">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent AI Actions</h3>
-              <%= link_to "View Cost", costs_path,
-                  class: "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium cursor-pointer transition-colors duration-200" %>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent AI Insights</h3>
+              <div class="flex items-center space-x-3">
+                <span class="text-sm text-gray-500 dark:text-gray-400">
+                  Last 7 days
+                </span>
+                <% if @recent_ai_events.count > 5 %>
+                  <%= link_to "View All", document_path(@recent_ai_events.first.document),
+                      class: "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium cursor-pointer transition-colors duration-200" %>
+                <% end %>
+              </div>
             </div>
+
             <% if @recent_ai_events.any? %>
               <div class="space-y-3">
-                <% @recent_ai_events.each do |event| %>
-                  <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:ring-1 hover:ring-gray-200 dark:hover:ring-gray-500 transition-colors duration-200">
-                    <div class="flex items-center flex-1 min-w-0">
-                      <div class="flex-shrink-0">
-                        <div class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 flex items-center justify-center border border-blue-200 dark:border-blue-800">
-                          <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M9.504 1.132a1 1 0 01.992 0l1.75 1a1 1 0 11-.992 1.736L10 3.152l-1.254.716a1 1 0 11-.992-1.736l1.75-1zM5.618 4.504a1 1 0 01-.372 1.364L5.016 6l.23.132a1 1 0 11-.992 1.736L3 7.723V8a1 1 0 01-2 0V6a.996.996 0 01.52-.878l1.734-.99a1 1 0 011.364.372zm8.764 0a1 1 0 011.364-.372l1.734.99A.996.996 0 0118 6v2a1 1 0 11-2 0v-.277l-1.254.145a1 1 0 11-.992-1.736L14.984 6l-.23-.132a1 1 0 01-.372-1.364zm-7 4a1 1 0 011.364-.372L10 8.848l1.254-.716a1 1 0 11.992 1.736L11 10.723V12a1 1 0 11-2 0v-1.277l-1.246-.855a1 1 0 01-.372-1.364zM3 11a1 1 0 011 1v1.277l1.246.855a1 1 0 01-.372 1.364l-1.75-1A.996.996 0 013 14v-2a1 1 0 011-1zm14 0a1 1 0 011 1v2a.996.996 0 01-.52.878l-1.75 1a1 1 0 11-.992-1.736L16 14.277V12a1 1 0 011-1zm-9.618 4.504a1 1 0 01.372-1.364L9 13.848l1.254.716a1 1 0 11-.992 1.736l-1.75-1a1 1 0 01-.372-1.364z" clip-rule="evenodd" />
-                          </svg>
+                <% @recent_ai_events.first(5).each do |event| %>
+                  <div class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center space-x-3">
+                        <!-- Better Icons -->
+                        <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                          <% case event.event_type %>
+                          <% when 'question_answering' %>
+                            <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                          <% when 'summarization' %>
+                            <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                            </svg>
+                          <% when 'redlining' %>
+                            <svg class="h-5 w-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" clip-rule="evenodd" />
+                            </svg>
+                          <% else %>
+                            <svg class="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M9.504 1.132a1 1 0 01.992 0l1.75 1a1 1 0 11-.992 1.736L10 3.152l-1.254.716a1 1 0 11-.992-1.736l1.75-1zM5.618 4.504a1 1 0 01-.372 1.364L5.016 6l.23.132a1 1 0 11-.992 1.736L3 7.723V8a1 1 0 01-2 0V6a.996.996 0 01.52-.878l1.734-.99a1 1 0 011.364.372zm8.764 0a1 1 0 011.364-.372l1.734.99A.996.996 0 0118 6v2a1 1 0 11-2 0v-.277l-1.254.145a1 1 0 11-.992-1.736L14.984 6l-.23-.132a1 1 0 01-.372-1.364zm-7 4a1 1 0 011.364-.372L10 8.848l1.254-.716a1 1 0 11.992 1.736L11 10.723V12a1 1 0 11-2 0v-1.277l-1.246-.855a1 1 0 01-.372-1.364zM3 11a1 1 0 011 1v1.277l1.246.855a1 1 0 01-.372 1.364l-1.75-1A.996.996 0 013 14v-2a1 1 0 011-1zm14 0a1 1 0 011 1v2a.996.996 0 01-.52.878l-1.75 1a1 1 0 11-.992-1.736L16 14.277V12a1 1 0 011-1zm-9.618 4.504a1 1 0 01.372-1.364L9 13.848l1.254.716a1 1 0 11-.992 1.736l-1.75-1a1 1 0 01-.372-1.364z" clip-rule="evenodd" />
+                            </svg>
+                          <% end %>
+                        </div>
+
+                        <div>
+                          <!-- User-friendly action names -->
+                          <p class="font-medium text-gray-900 dark:text-white">
+                            <% case event.event_type %>
+                            <% when 'question_answering' %>
+                              Question Analysis
+                            <% when 'summarization' %>
+                              Document Summary
+                            <% when 'redlining' %>
+                              Redlines Generated
+                            <% else %>
+                              <%= event.event_type.titleize %>
+                            <% end %>
+                          </p>
+
+                          <!-- Better document info -->
+                          <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <% if event.document.present? %>
+                              <%= event.document.display_name %>
+                            <% elsif event.deleted_document.present? %>
+                              <%= event.deleted_document.display_name %> (deleted)
+                            <% else %>
+                              Unknown Document
+                            <% end %> •
+                            <%= time_ago_in_words(event.created_at) %> ago
+                          </p>
                         </div>
                       </div>
-                      <div class="ml-4 flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">
-                          <%= event.event_type.humanize %>
-                        </p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">
-                          <% if event.document.present? %>
-                            <%= event.document.display_name %>
-                          <% elsif event.deleted_document.present? %>
-                            <%= event.deleted_document.display_name %> (deleted)
-                          <% else %>
-                            Unknown Document
-                          <% end %> •
-                          <%= event.created_at.strftime("%B %d, %Y at %I:%M %p") %>
-                        </p>
-                      </div>
-                    </div>
-                    <div class="text-right ml-4">
-                      <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                        $<%= sprintf("%.4f", event.cost_cents / 100.0) %>
-                      </p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        <%= event.model %>
-                      </p>
+
+                                             <!-- Simple status indicator -->
+                       <div class="flex items-center">
+                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                           <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                           </svg>
+                           Completed
+                         </span>
+                       </div>
                     </div>
                   </div>
                 <% end %>
@@ -233,8 +378,12 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">No AI actions performed yet.</p>
-                <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Upload a document and start asking questions to see AI actions here.</p>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">No AI insights yet.</p>
+                <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Upload a document and start asking questions to see AI insights here.</p>
+                <div class="mt-4">
+                  <%= link_to "Upload Document", new_document_path,
+                      class: "inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors" %>
+                </div>
               </div>
             <% end %>
           </div>
